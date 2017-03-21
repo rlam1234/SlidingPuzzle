@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Sliding Tile Puzzle</string>
+    <string name="attributionText">The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License.</string>
+    <string name="titleText">Sliding Tile Puzzle</string>
+    <string name="instructionText"><b>Instructions:</b>  Slide the tiles around until the numbers appear in numerical order. Tap a number to slide it into the empty square; only numbers adjacent to the empty square may slide into it.</string>
+    <string name="_1">1</string>
+    <string name="_2">2</string>
+    <string name="_3">3</string>
+    <string name="_4">4</string>
+    <string name="_5">5</string>
+    <string name="_6">6</string>
+    <string name="_7">7</string>
+    <string name="_8">8</string>
+    <string name="emptyTile">" "</string>
+    <string name="errorCannotMove">That tile cannot be moved yet</string>
+    <string name="errorCannotMoveEmpty">There is no tile there</string>
+    <string name="attributionUrl">https://developer.android.com/distribute/marketing-tools/brand-guidelines.html</string>
+</resources>

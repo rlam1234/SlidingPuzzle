@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageButton
+        android:id="@+id/splashButton"
+        android:layout_weight="1"
+        android:visibility="visible"
+        android:src="@drawable/splash_page"
+        android:scaleType="fitCenter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/attributionText"
+        android:text="@string/attributionText"
+        android:textSize="@dimen/attributionSize"
+        android:layout_margin="@dimen/instructionMargin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
