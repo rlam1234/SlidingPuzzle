@@ -112,20 +112,20 @@ public class PuzzleActivity extends AppCompatActivity {
     private class TimerTask extends AsyncTask<Void, Integer, Integer> {
         public Integer elapsedTime = new Integer(0);
 
-        @Override
-        protected void onPostExecute(final Integer time) {
-            timeView.setText(intToHHMMSS(elapsedTime));
-        }
+//        @Override
+//        protected void onPostExecute(final Integer time) {
+//            timeView.setText(intToHHMMSS(elapsedTime));
+//        }
 
         @Override
         protected void onProgressUpdate(final Integer... time) {
 			timeView.setText(intToHHMMSS(elapsedTime));
         }
 
-        @Override
-        protected void onCancelled(final Integer time) {
-			timeView.setText(intToHHMMSS(elapsedTime));
-        }
+//        @Override
+//        protected void onCancelled(final Integer time) {
+//			timeView.setText(intToHHMMSS(elapsedTime));
+//        }
 
         @Override
         protected Integer doInBackground(Void... stuff) {
@@ -164,8 +164,11 @@ public class PuzzleActivity extends AppCompatActivity {
             movesView.setText(Integer.toString(moves));
             solveTime = savedInstanceState.getInt(NAME_SOLVE_TIME);
 
-            if (solveTime > 0)
-                timeView.setText(intToHHMMSS(solveTime));
+			Log.w(NAME, "onCreate: solveTime = " + solveTime);
+
+            if (solveTime > 0) {
+				timeView.setText(intToHHMMSS(solveTime));
+			}
             else {
                 timer = new TimerTask();
                 timer.elapsedTime = savedInstanceState.getInt(NAME_ELAPSED_TIME);
@@ -195,12 +198,28 @@ public class PuzzleActivity extends AppCompatActivity {
         outState.putInt(NAME_ELAPSED_TIME, timer == null ? -1 : timer.elapsedTime);
         outState.putInt(NAME_SOLVE_TIME, solveTime);
 
-        for (int row = 0; row < MAX_ROWS; row++)
+		Log.w(NAME, "onSaveInstanceState: solveTime = " + solveTime);
+
+		if (timer != null) {
+			timer.cancel(true);
+			timer = null;
+		}
+
+		for (int row = 0; row < MAX_ROWS; row++)
             for (int columns = 0; columns < MAX_COLS; columns++)
                  outState.putInt(NAME_ID + (row * MAX_COLS + columns), tiles[row][columns].id);
 
         super.onSaveInstanceState(outState);
     }
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (timer != null) {
+			timer.cancel(true);
+			timer = null;
+		}
+	}
 
     /*
 	 * Randomize the puzzle board by moving the blank tile around (using valid movements); this will
@@ -396,5 +415,9 @@ public class PuzzleActivity extends AppCompatActivity {
         timer.cancel(true);
         solveTime = timer.elapsedTime;
         timer = null;
-    }
+		timeView.setText(intToHHMMSS(solveTime));
+
+		Log.d(NAME, "puzzleSolved: solveTime = " + solveTime);
+
+	}
 }
