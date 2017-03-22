@@ -7,6 +7,8 @@ import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -95,7 +97,7 @@ public class PuzzleActivity extends AppCompatActivity {
                 emptyTileColumn = tileColumn;
 
                 moves++;
-                movesView.setText(Integer.toString(moves));
+                movesView.setText(getString(R.string.moves) + ": " + Integer.toString(moves));
 
                 if (isSolved())
                     puzzleSolved();
@@ -119,7 +121,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
         @Override
         protected void onProgressUpdate(final Integer... time) {
-			timeView.setText(intToHHMMSS(elapsedTime));
+			timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(elapsedTime));
         }
 
 //        @Override
@@ -156,23 +158,21 @@ public class PuzzleActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             randomizeTiles();
-            timeView.setText(intToHHMMSS(timer.elapsedTime));
+            timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(timer.elapsedTime));
         } else {
             emptyTileRow = savedInstanceState.getInt(NAME_EMPTY_ROW);
             emptyTileColumn = savedInstanceState.getInt(NAME_EMPTY_COLUMN);
             moves = savedInstanceState.getInt(NAME_MOVES);
-            movesView.setText(Integer.toString(moves));
+            movesView.setText(getString(R.string.moves) + ": " + Integer.toString(moves));
             solveTime = savedInstanceState.getInt(NAME_SOLVE_TIME);
 
-			Log.w(NAME, "onCreate: solveTime = " + solveTime);
-
             if (solveTime > 0) {
-				timeView.setText(intToHHMMSS(solveTime));
+				timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
 			}
             else {
                 timer = new TimerTask();
                 timer.elapsedTime = savedInstanceState.getInt(NAME_ELAPSED_TIME);
-                timeView.setText(intToHHMMSS(timer.elapsedTime));
+                timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
 				timer.execute();
             }
 
@@ -198,8 +198,6 @@ public class PuzzleActivity extends AppCompatActivity {
         outState.putInt(NAME_ELAPSED_TIME, timer == null ? -1 : timer.elapsedTime);
         outState.putInt(NAME_SOLVE_TIME, solveTime);
 
-		Log.w(NAME, "onSaveInstanceState: solveTime = " + solveTime);
-
 		if (timer != null) {
 			timer.cancel(true);
 			timer = null;
@@ -221,10 +219,26 @@ public class PuzzleActivity extends AppCompatActivity {
 		}
 	}
 
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        MenuItem mItem1 = menu.add(0, 1, 1, "Menu Item 1");
+        mItem1.setIcon(R.drawable.splash_page);
+        mItem1.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
     /*
-	 * Randomize the puzzle board by moving the blank tile around (using valid movements); this will
-	 * ensure that the resulting board is solvable vs just randomly placing all the tiles on the puzzle.
-	 */
+			 * Randomize the puzzle board by moving the blank tile around (using valid movements); this will
+			 * ensure that the resulting board is solvable vs just randomly placing all the tiles on the puzzle.
+			 */
     private void randomizeTiles() {
         final int MAXIMUM_MOVES = 5;      // the number of times to move the empty tile before we consider the puzzle to be randomized
         int counter = 0;                  // number of successful moves of the empty tile
@@ -300,8 +314,8 @@ public class PuzzleActivity extends AppCompatActivity {
     private void initialize() {
         // Reset the statistical counters
         moves = 0;
-        movesView.setText(Integer.toString(moves));
-        timeView.setText(intToHHMMSS(0));
+        movesView.setText(getString(R.string.moves) + ": " + Integer.toString(moves));
+        timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(0));
 
         // Assign the tiles to the puzzle board; initially, this will be in the solved position.
         tiles[0][0] = new Tile(0, (ImageView) findViewById(R.id.tile00));
@@ -397,8 +411,6 @@ public class PuzzleActivity extends AppCompatActivity {
     }
 
     private String intToHHMMSS(int time) {
-		Log.w(NAME, "intToHHMMSS(" + time + ")");
-
         int second = time % 60;
 
         int totalMinutes = time / 60;
@@ -415,9 +427,6 @@ public class PuzzleActivity extends AppCompatActivity {
         timer.cancel(true);
         solveTime = timer.elapsedTime;
         timer = null;
-		timeView.setText(intToHHMMSS(solveTime));
-
-		Log.d(NAME, "puzzleSolved: solveTime = " + solveTime);
-
+		timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
 	}
 }
