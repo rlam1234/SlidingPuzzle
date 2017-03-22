@@ -121,6 +121,13 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
+	<Button
+		android:id="@+id/newPuzzle"
+		android:text="New Puzzle"
+		android:layout_below="@id/row2"
+		android:layout_centerHorizontal="true"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
 	<TextView
 		android:id="@+id/elapsedTime"
 		android:text="Time: 00:00:00"
@@ -128,13 +135,6 @@
 		android:layout_alignParentLeft="true"
 		android:layout_centerVertical="true"
 		android:layout_alignBaseline="@id/newPuzzle"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" />
-	<Button
-		android:id="@+id/newPuzzle"
-		android:text="New Puzzle"
-		android:layout_below="@id/row2"
-		android:layout_centerHorizontal="true"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" />
 	<TextView

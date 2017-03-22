@@ -4,9 +4,12 @@ import android.app.FragmentManager;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -130,7 +133,9 @@ public class PuzzleActivity extends AppCompatActivity {
         protected void onProgressUpdate(final Integer... time) {
 			timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(elapsedTime));
             if (puzzleActivityWeakReference.get() != null)
-			    puzzleActivityWeakReference.get().timeView.setText(intToHHMMSS(elapsedTime));
+			    puzzleActivityWeakReference.get()
+                        .timeView
+                        .setText(getString(R.string.time) + ": " + intToHHMMSS(elapsedTime));
         }
 
 //        @Override
@@ -295,7 +300,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
         setTileBackground();
 
-        timer = new TimerTask();
+        timer = new TimerTask(this);
         timer.execute();
     }   // end randomizeTiles
 
