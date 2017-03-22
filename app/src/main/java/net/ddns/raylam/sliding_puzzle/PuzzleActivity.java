@@ -7,8 +7,6 @@ import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -17,6 +15,7 @@ import android.widget.Toast;
 
 import net.ddns.raylam.sliding_puzzle.data.Tile;
 
+import java.lang.ref.WeakReference;
 import java.util.Random;
 
 public class PuzzleActivity extends AppCompatActivity {
@@ -112,7 +111,15 @@ public class PuzzleActivity extends AppCompatActivity {
     };
 
     private class TimerTask extends AsyncTask<Void, Integer, Integer> {
+        @NonNull
         public Integer elapsedTime = new Integer(0);
+
+        @NonNull
+        private final WeakReference<PuzzleActivity> puzzleActivityWeakReference;
+
+        private TimerTask(@NonNull PuzzleActivity puzzleActivity) {
+            puzzleActivityWeakReference = new WeakReference<PuzzleActivity>(puzzleActivity);
+        }
 
 //        @Override
 //        protected void onPostExecute(final Integer time) {
@@ -122,6 +129,8 @@ public class PuzzleActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(final Integer... time) {
 			timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(elapsedTime));
+            if (puzzleActivityWeakReference.get() != null)
+			    puzzleActivityWeakReference.get().timeView.setText(intToHHMMSS(elapsedTime));
         }
 
 //        @Override
@@ -170,7 +179,7 @@ public class PuzzleActivity extends AppCompatActivity {
 				timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
 			}
             else {
-                timer = new TimerTask();
+                timer = new TimerTask(this);
                 timer.elapsedTime = savedInstanceState.getInt(NAME_ELAPSED_TIME);
                 timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
 				timer.execute();
