@@ -9,7 +9,6 @@
  */
 package net.ddns.raylam.sliding_puzzle;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -31,7 +30,7 @@ import net.ddns.raylam.sliding_puzzle.data.Tile;
 import java.lang.ref.WeakReference;
 import java.util.Random;
 
-public class PuzzleActivity extends Activity {
+public class PuzzleActivity extends AppCompatActivity {
     // Name of this Activity; used for logging/debugging purposes
     public static final String NAME = PuzzleActivity.class.getSimpleName();
 
@@ -189,7 +188,7 @@ public class PuzzleActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.puzzleactivity);
 
-        findViewById(R.id.newPuzzle).setOnClickListener(new View.OnClickListener() {
+		findViewById(R.id.newPuzzle).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 randomizeTiles();
@@ -297,15 +296,15 @@ public class PuzzleActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == DIFFICULTY_RCODE && requestCode == Activity.RESULT_OK) {
+        if (requestCode == DIFFICULTY_RCODE && resultCode == AppCompatActivity.RESULT_OK) {
             difficulty = data.getIntExtra(NAME_DIFFICULTY, DIFFICULTY1);
         }
     }
 
     /*
-         * Randomize the puzzle board by moving the blank tile around (using valid movements); this will
-         * ensure that the resulting board is solvable vs just randomly placing all the tiles on the puzzle.
-         */
+     * Randomize the puzzle board by moving the blank tile around (using valid movements); this will
+     * ensure that the resulting board is solvable vs just randomly placing all the tiles on the puzzle.
+     */
     private void randomizeTiles() {
         int counter = 0;                  // number of successful moves of the empty tile
         int previousDirection = -1;

@@ -9,16 +9,16 @@
  */
 package net.ddns.raylam.sliding_puzzle;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-public class DifficultyActivity extends Activity {
+public class DifficultyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +27,8 @@ public class DifficultyActivity extends Activity {
         ((RadioGroup) findViewById(R.id.difficultyGroup)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                Log.w("DifficultyActivity", "onCheckedChanged: radioGroup = " + group + ", checkedId = " + checkedId);
+
                 int difficulty = PuzzleActivity.DIFFICULTY1;
 
                 if (((RadioButton) findViewById(R.id.difficulty2Button)).isChecked())

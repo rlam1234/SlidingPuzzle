@@ -9,16 +9,14 @@
  */
 package net.ddns.raylam.sliding_puzzle;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-public class AppActivity extends Activity {
+public class AppActivity extends AppCompatActivity {
     public static final String NAME = AppActivity.class.getSimpleName();
 
     @Override
