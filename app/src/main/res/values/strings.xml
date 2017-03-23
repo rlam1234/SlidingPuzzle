@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Sliding Tile Puzzle</string>
     <string name="attributionText">The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License.</string>
-    <string name="instructionText"><b>Instructions:</b>  Slide the tiles around until the numbers appear in numerical order. Tap a number to slide it into the empty square; only numbers adjacent to the empty square may slide into it.</string>
     <string name="_1">1</string>
     <string name="_2">2</string>
     <string name="_3">3</string>
@@ -16,4 +15,13 @@
     <string name="attributionUrl">https://developer.android.com/distribute/marketing-tools/brand-guidelines.html</string>
     <string name="time">Time</string>
     <string name="moves">Moves</string>
+    <string name="difficultyItem">Difficulty</string>
+    <string name="difficultyText">Select the difficulty level.</string>
+    <string name="difficultyText1">Easy</string>
+    <string name="difficultyText2">Medium</string>
+    <string name="difficultyText3">Hard</string>
+    <string name="helpItem">Help</string>
+    <string name="helpText">Slide the tiles around until they appear in proper order with the empty tile placed in the bottom right. \n\nTap a tile to slide it into the empty square; only tiles adjacent to the empty square may slide into it.</string>
+    <string name="aboutItem">About</string>
+    <string name="aboutText">This <i>Sliding Tile Puzzle</i> application for Android™ was created by Raymond Lam for the final project of <i>SCS2682: Mobile Applications for Android Devices</i>. \n\nCopyright © 2017 Raymond Lam. All rights reserved. \n\nNo part of this application, either code or image, may be used for any purpose other than to evaluate his programming style. Therefore, any reproduction or modification by any means is strictly prohibited without prior written permission.</string>
 </resources>

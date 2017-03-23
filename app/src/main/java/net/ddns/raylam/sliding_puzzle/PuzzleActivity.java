@@ -1,6 +1,16 @@
+/*
+ * This Sliding Tile Puzzle application for Android™ was created by Raymond Lam for the final project of SCS2682: Mobile Applications for Android Devices.
+ *
+ * Copyright © 2017 Raymond Lam. All rights reserved.
+ *
+ * No part of this application, either code or image, may be used for any purpose other than to evaluate his programming style.
+ * Therefore, any reproduction or modification by any means is strictly prohibited without prior written permission.
+ *
+ */
 package net.ddns.raylam.sliding_puzzle;
 
-import android.app.FragmentManager;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.SystemClock;
@@ -21,7 +31,7 @@ import net.ddns.raylam.sliding_puzzle.data.Tile;
 import java.lang.ref.WeakReference;
 import java.util.Random;
 
-public class PuzzleActivity extends AppCompatActivity {
+public class PuzzleActivity extends Activity {
     // Name of this Activity; used for logging/debugging purposes
     public static final String NAME = PuzzleActivity.class.getSimpleName();
 
@@ -64,6 +74,25 @@ public class PuzzleActivity extends AppCompatActivity {
 
     // Stores the images of the various puzzle pieces; puzzlePieces[i] holds the image of the puzzle piece with id i.
     private Drawable[] puzzlePieces = new Drawable[MAX_ROWS * MAX_COLS];
+
+    // Menu items
+    private static final int MENU_DIFFICULTY = 1;
+    private static final int MENU_HELP = 2;
+    private static final int MENU_ABOUT = 3;
+
+    // Request code for the DifficultyActivity
+    public static final int DIFFICULTY_RCODE = 1234;
+
+    // Game difficulty levels
+    public static final int DIFFICULTY1 = 1;       // Easy
+    public static final int DIFFICULTY2 = 2;       // Medium
+    public static final int DIFFICULTY3 = 3;       // Hard
+
+    // Intent difficulty name
+    public static final String NAME_DIFFICULTY = "Difficulty";
+
+    // Current game difficulty level
+    private int difficulty = DIFFICULTY1;
 
     /*
      * This OnClickListener handles the actions associated with tapping on a tile (switching it with the empty tile,
@@ -237,31 +266,66 @@ public class PuzzleActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(final Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        MenuItem mItem1 = menu.add(0, 1, 1, "Menu Item 1");
-        mItem1.setIcon(R.drawable.splash_page);
-        mItem1.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        MenuItem mDifficulty = menu.add(0, MENU_DIFFICULTY, MENU_DIFFICULTY, R.string.difficultyItem);
+        mDifficulty.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+        MenuItem mHelp = menu.add(0, MENU_HELP, MENU_HELP, R.string.helpItem);
+        mHelp.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+        MenuItem mAbout = menu.add(0, MENU_ABOUT, MENU_ABOUT, R.string.aboutItem);
+        mAbout.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case MENU_DIFFICULTY:
+                startActivityForResult(new Intent(this, DifficultyActivity.class), DIFFICULTY_RCODE);
+                return true;
+            case MENU_HELP:
+                startActivity(new Intent(this, HelpActivity.class));
+                return true;
+            case MENU_ABOUT:
+                startActivity(new Intent(this, AboutActivity.class));
+                return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == DIFFICULTY_RCODE && requestCode == Activity.RESULT_OK) {
+            difficulty = data.getIntExtra(NAME_DIFFICULTY, DIFFICULTY1);
+        }
     }
 
     /*
-			 * Randomize the puzzle board by moving the blank tile around (using valid movements); this will
-			 * ensure that the resulting board is solvable vs just randomly placing all the tiles on the puzzle.
-			 */
+         * Randomize the puzzle board by moving the blank tile around (using valid movements); this will
+         * ensure that the resulting board is solvable vs just randomly placing all the tiles on the puzzle.
+         */
     private void randomizeTiles() {
-        final int MAXIMUM_MOVES = 5;      // the number of times to move the empty tile before we consider the puzzle to be randomized
         int counter = 0;                  // number of successful moves of the empty tile
         int previousDirection = -1;
 		solveTime = -1;
 
         initialize();
 
-        while (counter < MAXIMUM_MOVES) {
+        int maximumMoves;      // the number of times to move the empty tile before we consider the puzzle to be randomized
+        switch(difficulty) {
+            case DIFFICULTY3:
+                maximumMoves = 50;
+                break;
+            case DIFFICULTY2:
+                maximumMoves = 25;
+                break;
+            default: case DIFFICULTY1:
+                maximumMoves = 5;
+        }
+
+        while (counter < maximumMoves) {
             // Pick a random direction to move the empty tile;
             // if it's moving the tile back where just it came from, pick another direction
             int direction = randomDirection();

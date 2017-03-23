@@ -16,5 +16,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".PuzzleActivity" />
+        <activity android:name=".DifficultyActivity" />
+        <activity android:name=".HelpActivity" />
+        <activity android:name=".AboutActivity" />
     </application>
 </manifest>
