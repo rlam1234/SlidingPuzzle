@@ -56,7 +56,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
     private int moves = 0;				// Number of moves taken so far
     private TimerTask timer;
-    private int solveTime = -1;			// Time taken to solve the puzzle (in seconds)
+    private int solveTime = 0;			// Time taken to solve the puzzle (in seconds)
     private TextView movesView;
     private TextView timeView;
 
@@ -109,6 +109,8 @@ public class PuzzleActivity extends AppCompatActivity {
                         tileColumn = column;
                     }
 
+            Log.w(NAME, "tileOnclickListener#onClick: tileRow = " + tileRow + ", tileColumn = " + tileColumn);
+
             // Can we slide the tapped tile into the empty space?
             if ((tileRow == emptyTileRow - 1 && tileColumn == emptyTileColumn)
                     || (tileRow == emptyTileRow + 1 && tileColumn == emptyTileColumn)
@@ -143,13 +145,13 @@ public class PuzzleActivity extends AppCompatActivity {
 
     private class TimerTask extends AsyncTask<Void, Integer, Integer> {
         @NonNull
-        public Integer elapsedTime = new Integer(0);
+        private Integer elapsedTime = 0;
 
         @NonNull
         private final WeakReference<PuzzleActivity> puzzleActivityWeakReference;
 
         private TimerTask(@NonNull PuzzleActivity puzzleActivity) {
-            puzzleActivityWeakReference = new WeakReference<PuzzleActivity>(puzzleActivity);
+            puzzleActivityWeakReference = new WeakReference<>(puzzleActivity);
         }
 
 //        @Override
@@ -214,7 +216,7 @@ public class PuzzleActivity extends AppCompatActivity {
             else {
                 timer = new TimerTask(this);
                 timer.elapsedTime = savedInstanceState.getInt(NAME_ELAPSED_TIME);
-                timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
+                timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(timer.elapsedTime));
 				timer.execute();
             }
 
@@ -308,7 +310,7 @@ public class PuzzleActivity extends AppCompatActivity {
     private void randomizeTiles() {
         int counter = 0;                  // number of successful moves of the empty tile
         int previousDirection = -1;
-		solveTime = -1;
+		solveTime = 0;
 
         initialize();
 
@@ -365,6 +367,8 @@ public class PuzzleActivity extends AppCompatActivity {
 
         timer = new TimerTask(this);
         timer.execute();
+
+        Log.w(NAME, "leaving randomizeTiles: \n" + tilesToString());
     }   // end randomizeTiles
 
     private int oppositeDirection(int direction) {
@@ -393,6 +397,8 @@ public class PuzzleActivity extends AppCompatActivity {
         moves = 0;
         movesView.setText(getString(R.string.moves) + ": " + Integer.toString(moves));
         timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(0));
+        emptyTileRow = 2;
+        emptyTileColumn = 2;
 
         // Assign the tiles to the puzzle board; initially, this will be in the solved position.
         tiles[0][0] = new Tile(0, (ImageView) findViewById(R.id.tile00));
@@ -436,6 +442,8 @@ public class PuzzleActivity extends AppCompatActivity {
             for (int column = 0; column < MAX_COLS; column++) {
                 tiles[row][column].imageView.setOnClickListener(tileOnClickListener);
             }
+
+        Log.w(NAME, "leaving initializeTiles: \n" + tilesToString());
     }
 
     /*
