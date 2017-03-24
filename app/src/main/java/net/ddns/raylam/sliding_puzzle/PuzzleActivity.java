@@ -100,6 +100,10 @@ public class PuzzleActivity extends AppCompatActivity {
     private final OnClickListener tileOnClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
+            // If the puzzle's been solved already, don't allow the user to move the tiles around
+            if (solveTime > 0)
+                return;
+
             int tileRow = -1;
             int tileColumn = -1;
             for (int row = 0; row < MAX_ROWS; row++)
