@@ -30,12 +30,19 @@ public class DifficultyDialog extends DialogFragment {
     private RadioButton difficulty1Button;
     private RadioButton difficulty2Button;
     private RadioButton difficulty3Button;
+    private int difficulty;
 
     // Fragments require a no-arg constructor
     public DifficultyDialog() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Bundle bundle = getArguments();
+        if (bundle != null)
+            difficulty = bundle.getInt(PuzzleActivity.NAME_DIFFICULTY);
+
+        Log.w(NAME, "onCreateView: bundle = " + bundle + ", difficulty = " + difficulty);
+
         View view = inflater.inflate(R.layout.difficultyfragment, container);
 
         // Find the activity and radio buttons for later use
@@ -47,26 +54,26 @@ public class DifficultyDialog extends DialogFragment {
         getDialog().setTitle(R.string.difficultyItem);
 
         // Check the current difficulty level so the user knows what it is
-        if (activity.difficulty == PuzzleActivity.DIFFICULTY1)
+        if (difficulty == PuzzleActivity.DIFFICULTY1)
             difficulty1Button.setChecked(true);
-        else if (activity.difficulty == PuzzleActivity.DIFFICULTY2)
+        else if (difficulty == PuzzleActivity.DIFFICULTY2)
             difficulty2Button.setChecked(true);
-        else if (activity.difficulty == PuzzleActivity.DIFFICULTY3)
+        else if (difficulty == PuzzleActivity.DIFFICULTY3)
             difficulty3Button.setChecked(true);
 
         ((RadioGroup) view.findViewById(R.id.difficultyGroup)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 if (difficulty1Button.isChecked())
-                    activity.difficulty = PuzzleActivity.DIFFICULTY1;
+                    activity.onDifficultySelected(PuzzleActivity.DIFFICULTY1);
 
                 if (difficulty2Button.isChecked())
-                    activity.difficulty = PuzzleActivity.DIFFICULTY2;
+                    activity.onDifficultySelected(PuzzleActivity.DIFFICULTY2);
 
                 if (difficulty3Button.isChecked())
-                    activity.difficulty = PuzzleActivity.DIFFICULTY3;
+                    activity.onDifficultySelected(PuzzleActivity.DIFFICULTY3);
 
-                dismiss();
+//                dismiss();
             }
         });
 

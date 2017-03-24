@@ -9,6 +9,8 @@
  */
 package net.ddns.raylam.sliding_puzzle;
 
+import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -80,19 +82,16 @@ public class PuzzleActivity extends AppCompatActivity {
     private static final int MENU_HELP = 2;
     private static final int MENU_ABOUT = 3;
 
-    // Request code for the DifficultyActivity
-    public static final int DIFFICULTY_RCODE = 1234;
-
     // Game difficulty levels
     public static final int DIFFICULTY1 = 1;       // Easy
     public static final int DIFFICULTY2 = 2;       // Medium
     public static final int DIFFICULTY3 = 3;       // Hard
 
-    // Intent difficulty name
+    // Bundle difficulty name when passing to DifficultyDialog
     public static final String NAME_DIFFICULTY = "Difficulty";
 
     // Current game difficulty level
-    public int difficulty = DIFFICULTY1;
+    private  int difficulty = DIFFICULTY1;
 
     /*
      * This OnClickListener handles the actions associated with tapping on a tile (switching it with the empty tile,
@@ -113,8 +112,6 @@ public class PuzzleActivity extends AppCompatActivity {
                         tileRow = row;
                         tileColumn = column;
                     }
-
-            Log.w(NAME, "tileOnclickListener#onClick: tileRow = " + tileRow + ", tileColumn = " + tileColumn);
 
             // Can we slide the tapped tile into the empty space?
             if ((tileRow == emptyTileRow - 1 && tileColumn == emptyTileColumn)
@@ -148,6 +145,9 @@ public class PuzzleActivity extends AppCompatActivity {
         }
     };
 
+    /*
+     * TimerTask updates the elapsed time clock.
+     */
     private class TimerTask extends AsyncTask<Void, Integer, Integer> {
         @NonNull
         private Integer elapsedTime = 0;
@@ -276,17 +276,26 @@ public class PuzzleActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        FragmentManager fm = getFragmentManager();
-
         switch (item.getItemId()) {
             case MENU_DIFFICULTY:
-                fm.beginTransaction().add(new DifficultyDialog(), DifficultyDialog.NAME).commit();
+                DifficultyDialog difficultyDialog = new DifficultyDialog();
+                Bundle bundle = new Bundle();
+                bundle.putInt(NAME_DIFFICULTY, difficulty);
+                difficultyDialog.setArguments(bundle);
+
+                getFragmentManager().beginTransaction()
+                        .add(difficultyDialog, DifficultyDialog.NAME)
+                        .commit();
                 return true;
             case MENU_HELP:
-                fm.beginTransaction().add(new HelpDialog(), HelpDialog.NAME).commit();
+                getFragmentManager().beginTransaction()
+                        .add(new HelpDialog(), HelpDialog.NAME)
+                        .commit();
                 return true;
             case MENU_ABOUT:
-                fm.beginTransaction().add(new AboutDialog(), AboutDialog.NAME).commit();
+                getFragmentManager().beginTransaction()
+                        .add(new AboutDialog(), AboutDialog.NAME)
+                        .commit();
                 return true;
         }
 
@@ -298,6 +307,13 @@ public class PuzzleActivity extends AppCompatActivity {
      * ensure that the resulting board is solvable vs just randomly placing all the tiles on the puzzle.
      */
     private void randomizeTiles() {
+        // Maximum number of times to randomly move the empty tile around; the more times it's moved,
+        // the harder the puzzle will be to solve.  These numbers should be odd to avoid the small
+        // chance that the randomized puzzle will actually be in the solved state.
+        final int MAXIMUM_MOVES1 = 5;       // maximum number of times for an easy puzzle
+        final int MAXIMUM_MOVES2 = 25;      // maximum number of times for a medium puzzle
+        final int MAXIMUM_MOVES3 = 45;      // maximum number of times for a hard puzzle
+
         int counter = 0;                  // number of successful moves of the empty tile
         int previousDirection = -1;
 		solveTime = 0;
@@ -307,14 +323,16 @@ public class PuzzleActivity extends AppCompatActivity {
         int maximumMoves;      // the number of times to move the empty tile before we consider the puzzle to be randomized
         switch(difficulty) {
             case DIFFICULTY3:
-                maximumMoves = 50;
+                maximumMoves = MAXIMUM_MOVES3;
                 break;
             case DIFFICULTY2:
-                maximumMoves = 25;
+                maximumMoves = MAXIMUM_MOVES2;
                 break;
             default: case DIFFICULTY1:
-                maximumMoves = 5;
+                maximumMoves = MAXIMUM_MOVES1;
         }
+
+        Log.w(NAME, "randomizeTiles: maximumMoves = " + maximumMoves);
 
         while (counter < maximumMoves) {
             // Pick a random direction to move the empty tile;
@@ -357,8 +375,6 @@ public class PuzzleActivity extends AppCompatActivity {
 
         timer = new TimerTask(this);
         timer.execute();
-
-        Log.w(NAME, "leaving randomizeTiles: \n" + tilesToString());
     }   // end randomizeTiles
 
     private int oppositeDirection(int direction) {
@@ -432,8 +448,6 @@ public class PuzzleActivity extends AppCompatActivity {
             for (int column = 0; column < MAX_COLS; column++) {
                 tiles[row][column].imageView.setOnClickListener(tileOnClickListener);
             }
-
-        Log.w(NAME, "leaving initializeTiles: \n" + tilesToString());
     }
 
     /*
@@ -486,6 +500,9 @@ public class PuzzleActivity extends AppCompatActivity {
     }
 
     private String intToHHMMSS(int time) {
+        if (time == 0)
+            return "00:00:00";
+
         int second = time % 60;
 
         int totalMinutes = time / 60;
@@ -504,4 +521,8 @@ public class PuzzleActivity extends AppCompatActivity {
         timer = null;
 		timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
 	}
+
+	public void onDifficultySelected(int difficulty) {
+        this.difficulty = difficulty;
+    }
 }
