@@ -287,7 +287,9 @@ public class PuzzleActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case MENU_DIFFICULTY:
-                startActivityForResult(new Intent(this, DifficultyActivity.class), DIFFICULTY_RCODE);
+                Intent difficultyIntent = new Intent(this, DifficultyActivity.class);
+                difficultyIntent.putExtra(NAME_DIFFICULTY, difficulty);
+                startActivityForResult(difficultyIntent, DIFFICULTY_RCODE);
                 return true;
             case MENU_HELP:
                 startActivity(new Intent(this, HelpActivity.class));

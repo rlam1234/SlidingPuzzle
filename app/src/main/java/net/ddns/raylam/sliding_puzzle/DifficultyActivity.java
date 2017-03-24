@@ -19,17 +19,26 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 public class DifficultyActivity extends AppCompatActivity {
+    private int difficulty;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.difficultyactivity);
 
+        // Check the currently selected difficulty level
+        difficulty = getIntent().getIntExtra(PuzzleActivity.NAME_DIFFICULTY, PuzzleActivity.DIFFICULTY1);
+        if (difficulty == PuzzleActivity.DIFFICULTY1)
+            ((RadioButton) findViewById(R.id.difficulty1Button)).setChecked(true);
+        else if (difficulty == PuzzleActivity.DIFFICULTY2)
+            ((RadioButton) findViewById(R.id.difficulty2Button)).setChecked(true);
+        else if (difficulty == PuzzleActivity.DIFFICULTY3)
+            ((RadioButton) findViewById(R.id.difficulty3Button)).setChecked(true);
+
         ((RadioGroup) findViewById(R.id.difficultyGroup)).setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 Log.w("DifficultyActivity", "onCheckedChanged: radioGroup = " + group + ", checkedId = " + checkedId);
-
-                int difficulty = PuzzleActivity.DIFFICULTY1;
 
                 if (((RadioButton) findViewById(R.id.difficulty2Button)).isChecked())
                     difficulty = PuzzleActivity.DIFFICULTY2;
