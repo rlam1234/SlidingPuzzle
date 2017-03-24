@@ -7,13 +7,14 @@
  * Therefore, any reproduction or modification by any means is strictly prohibited without prior written permission.
  *
  */
-package net.ddns.raylam.sliding_puzzle;
+package net.ddns.raylam.sliding_puzzle.ui;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import net.ddns.raylam.sliding_puzzle.R;
 
 public class HelpDialog extends DialogFragment {
     public static String NAME = HelpDialog.class.getSimpleName();

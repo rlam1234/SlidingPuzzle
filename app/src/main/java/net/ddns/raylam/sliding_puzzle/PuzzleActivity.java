@@ -9,15 +9,11 @@
  */
 package net.ddns.raylam.sliding_puzzle;
 
-import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +29,9 @@ import net.ddns.raylam.sliding_puzzle.data.Tile;
 
 import java.lang.ref.WeakReference;
 import java.util.Random;
+import net.ddns.raylam.sliding_puzzle.ui.AboutDialog;
+import net.ddns.raylam.sliding_puzzle.ui.DifficultyDialog;
+import net.ddns.raylam.sliding_puzzle.ui.HelpDialog;
 
 public class PuzzleActivity extends AppCompatActivity {
     // Name of this Activity; used for logging/debugging purposes
@@ -60,7 +59,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
     private int moves = 0;				// Number of moves taken so far
     private TimerTask timer;
-    private int solveTime = 0;			// Time taken to solve the puzzle (in seconds)
+    private int solveTime = -1;			// Time taken to solve the puzzle (in seconds)
     private TextView movesView;
     private TextView timeView;
 
@@ -102,7 +101,7 @@ public class PuzzleActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             // If the puzzle's been solved already, don't allow the user to move the tiles around
-            if (solveTime > 0)
+            if (solveTime != -1)
                 return;
 
             int tileRow = -1;
@@ -200,7 +199,8 @@ public class PuzzleActivity extends AppCompatActivity {
 							.getInt(NAME_DIFFICULTY, DIFFICULTY1);
 
         if (savedInstanceState == null) {
-            randomizeTiles();
+//            randomizeTiles();
+			initialize();
             timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(timer.elapsedTime));
         } else {
             emptyTileRow = savedInstanceState.getInt(NAME_EMPTY_ROW);
@@ -323,7 +323,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
         int counter = 0;                  // number of successful moves of the empty tile
         int previousDirection = -1;
-		solveTime = 0;
+		solveTime = -1;
 
         initialize();
 
@@ -338,8 +338,6 @@ public class PuzzleActivity extends AppCompatActivity {
             default: case DIFFICULTY1:
                 maximumMoves = MAXIMUM_MOVES1;
         }
-
-        Log.w(NAME, "randomizeTiles: maximumMoves = " + maximumMoves);
 
         while (counter < maximumMoves) {
             // Pick a random direction to move the empty tile;
@@ -379,8 +377,8 @@ public class PuzzleActivity extends AppCompatActivity {
         }   // end while
 
         setTileBackground();
-
-        timer = new TimerTask(this);
+//
+//        timer = new TimerTask(this);
         timer.execute();
     }   // end randomizeTiles
 
@@ -425,7 +423,9 @@ public class PuzzleActivity extends AppCompatActivity {
         tiles[2][2] = new Tile(8, (ImageView) findViewById(R.id.tile22));
 
         initializeTiles();
-    }
+
+		timer = new TimerTask(this);
+	}
 
     private void initializeTiles() {
         // Associate the puzzle pieces with their images
@@ -508,7 +508,7 @@ public class PuzzleActivity extends AppCompatActivity {
     }
 
     private String intToHHMMSS(int time) {
-        if (time == 0)
+        if (time <= 0)
             return "00:00:00";
 
         int second = time % 60;
@@ -523,11 +523,15 @@ public class PuzzleActivity extends AppCompatActivity {
     }
 
     private void puzzleSolved() {
-        Toast.makeText(getBaseContext(), "Puzzle Sovled!", Toast.LENGTH_LONG).show();
-        timer.cancel(true);
-        solveTime = timer.elapsedTime;
-        timer = null;
-		timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
+		// timer can be null if the user solves the puzzle and continues to move the tiles around to solve it again
+		// before the timer can be cancelled the first time around.
+		if (timer != null) {
+			timer.cancel(true);
+			Toast.makeText(getBaseContext(), "Puzzle Sovled!", Toast.LENGTH_LONG).show();
+			solveTime = timer.elapsedTime;
+			timer = null;
+			timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
+		}
 	}
 
 	public void onDifficultySelected(int difficulty) {

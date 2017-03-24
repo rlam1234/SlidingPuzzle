@@ -7,7 +7,7 @@
  * Therefore, any reproduction or modification by any means is strictly prohibited without prior written permission.
  *
  */
-package net.ddns.raylam.sliding_puzzle;
+package net.ddns.raylam.sliding_puzzle.ui;
 
 import android.app.DialogFragment;
 import android.os.Bundle;

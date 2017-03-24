@@ -7,12 +7,9 @@
  * Therefore, any reproduction or modification by any means is strictly prohibited without prior written permission.
  *
  */
-package net.ddns.raylam.sliding_puzzle;
+package net.ddns.raylam.sliding_puzzle.ui;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.util.Log;
@@ -21,8 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-
-import static android.app.Activity.RESULT_OK;
+import net.ddns.raylam.sliding_puzzle.PuzzleActivity;
+import net.ddns.raylam.sliding_puzzle.R;
 
 public class DifficultyDialog extends DialogFragment {
     public static String NAME = DifficultyDialog.class.getSimpleName();

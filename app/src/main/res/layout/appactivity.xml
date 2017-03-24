@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageButton
-        android:id="@+id/splashButton"
+    <ImageView
+        android:id="@+id/splashView"
         android:layout_weight="1"
         android:visibility="visible"
         android:src="@drawable/splash_page"
