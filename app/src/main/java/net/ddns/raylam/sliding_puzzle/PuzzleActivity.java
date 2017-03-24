@@ -10,6 +10,7 @@
 package net.ddns.raylam.sliding_puzzle;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -195,6 +196,9 @@ public class PuzzleActivity extends AppCompatActivity {
         movesView = (TextView) findViewById(R.id.moves);
         timeView = (TextView) findViewById(R.id.elapsedTime);
 
+		difficulty = getSharedPreferences(NAME, MODE_PRIVATE)
+							.getInt(NAME_DIFFICULTY, DIFFICULTY1);
+
         if (savedInstanceState == null) {
             randomizeTiles();
             timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(timer.elapsedTime));
@@ -284,16 +288,19 @@ public class PuzzleActivity extends AppCompatActivity {
                 difficultyDialog.setArguments(bundle);
 
                 getFragmentManager().beginTransaction()
+						.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .add(difficultyDialog, DifficultyDialog.NAME)
                         .commit();
                 return true;
             case MENU_HELP:
                 getFragmentManager().beginTransaction()
+						.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .add(new HelpDialog(), HelpDialog.NAME)
                         .commit();
                 return true;
             case MENU_ABOUT:
                 getFragmentManager().beginTransaction()
+						.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .add(new AboutDialog(), AboutDialog.NAME)
                         .commit();
                 return true;
@@ -491,7 +498,8 @@ public class PuzzleActivity extends AppCompatActivity {
 
         for (int row = 0; row < MAX_ROWS; row++) {
             for (int column = 0; column < MAX_COLS; column++) {
-                tilesToString += "(" + tiles[row][column].id + ", " + tiles[row][column].imageView.getDrawable() + ") ";
+//                tilesToString += "(" + tiles[row][column].id + ", " + tiles[row][column].imageView.getDrawable() + ") ";
+				tilesToString += "(" + tiles[row][column].id + ") ";
             }
             tilesToString += "\n";
         }
@@ -524,5 +532,9 @@ public class PuzzleActivity extends AppCompatActivity {
 
 	public void onDifficultySelected(int difficulty) {
         this.difficulty = difficulty;
+		getSharedPreferences(NAME, MODE_PRIVATE)
+			.edit()
+			.putInt(NAME_DIFFICULTY, difficulty)
+			.apply();
     }
 }
