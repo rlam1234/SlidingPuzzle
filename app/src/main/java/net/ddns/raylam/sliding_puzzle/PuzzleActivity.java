@@ -280,16 +280,13 @@ public class PuzzleActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case MENU_DIFFICULTY:
-                DifficultyDialog difficultyDialog = new DifficultyDialog();
-                difficultyDialog.show(fm, DifficultyDialog.NAME);
+                fm.beginTransaction().add(new DifficultyDialog(), DifficultyDialog.NAME).commit();
                 return true;
             case MENU_HELP:
-                HelpDialog helpDialog = new HelpDialog();
-                helpDialog.show(fm, HelpDialog.NAME);
+                fm.beginTransaction().add(new HelpDialog(), HelpDialog.NAME).commit();
                 return true;
             case MENU_ABOUT:
-                AboutDialog aboutDialog = new AboutDialog();
-                aboutDialog.show(fm, AboutDialog.NAME);
+                fm.beginTransaction().add(new AboutDialog(), AboutDialog.NAME).commit();
                 return true;
         }
 
