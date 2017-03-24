@@ -9,14 +9,22 @@
  */
 package net.ddns.raylam.sliding_puzzle;
 
+import android.app.DialogFragment;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-public class HelpActivity extends AppCompatActivity {
+public class HelpDialog extends DialogFragment {
+    public static String NAME = HelpDialog.class.getSimpleName();
+
+    public HelpDialog() {}
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.helpactivity);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.helpfragment, container);
+        getDialog().setTitle(R.string.helpItem);
+
+        return view;
     }
 }

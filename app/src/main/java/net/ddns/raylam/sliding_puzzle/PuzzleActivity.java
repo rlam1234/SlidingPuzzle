@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -91,7 +92,7 @@ public class PuzzleActivity extends AppCompatActivity {
     public static final String NAME_DIFFICULTY = "Difficulty";
 
     // Current game difficulty level
-    private int difficulty = DIFFICULTY1;
+    public int difficulty = DIFFICULTY1;
 
     /*
      * This OnClickListener handles the actions associated with tapping on a tile (switching it with the empty tile,
@@ -158,11 +159,6 @@ public class PuzzleActivity extends AppCompatActivity {
             puzzleActivityWeakReference = new WeakReference<>(puzzleActivity);
         }
 
-//        @Override
-//        protected void onPostExecute(final Integer time) {
-//            timeView.setText(intToHHMMSS(elapsedTime));
-//        }
-
         @Override
         protected void onProgressUpdate(final Integer... time) {
 			timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(elapsedTime));
@@ -171,11 +167,6 @@ public class PuzzleActivity extends AppCompatActivity {
                         .timeView
                         .setText(getString(R.string.time) + ": " + intToHHMMSS(elapsedTime));
         }
-
-//        @Override
-//        protected void onCancelled(final Integer time) {
-//			timeView.setText(intToHHMMSS(elapsedTime));
-//        }
 
         @Override
         protected Integer doInBackground(Void... stuff) {
@@ -285,28 +276,24 @@ public class PuzzleActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
+        FragmentManager fm = getFragmentManager();
+
         switch (item.getItemId()) {
             case MENU_DIFFICULTY:
-                Intent difficultyIntent = new Intent(this, DifficultyActivity.class);
-                difficultyIntent.putExtra(NAME_DIFFICULTY, difficulty);
-                startActivityForResult(difficultyIntent, DIFFICULTY_RCODE);
+                DifficultyDialog difficultyDialog = new DifficultyDialog();
+                difficultyDialog.show(fm, DifficultyDialog.NAME);
                 return true;
             case MENU_HELP:
-                startActivity(new Intent(this, HelpActivity.class));
+                HelpDialog helpDialog = new HelpDialog();
+                helpDialog.show(fm, HelpDialog.NAME);
                 return true;
             case MENU_ABOUT:
-                startActivity(new Intent(this, AboutActivity.class));
+                AboutDialog aboutDialog = new AboutDialog();
+                aboutDialog.show(fm, AboutDialog.NAME);
                 return true;
         }
 
         return false;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == DIFFICULTY_RCODE && resultCode == AppCompatActivity.RESULT_OK) {
-            difficulty = data.getIntExtra(NAME_DIFFICULTY, DIFFICULTY1);
-        }
     }
 
     /*
