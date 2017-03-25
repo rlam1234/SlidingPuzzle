@@ -10,6 +10,7 @@
 package net.ddns.raylam.sliding_puzzle;
 
 import android.app.FragmentTransaction;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.SystemClock;
@@ -25,13 +26,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import net.ddns.raylam.sliding_puzzle.data.GameScore;
 import net.ddns.raylam.sliding_puzzle.data.Tile;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import net.ddns.raylam.sliding_puzzle.ui.AboutDialog;
 import net.ddns.raylam.sliding_puzzle.ui.DifficultyDialog;
 import net.ddns.raylam.sliding_puzzle.ui.HelpDialog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class PuzzleActivity extends AppCompatActivity {
     // Name of this Activity; used for logging/debugging purposes
@@ -44,6 +56,11 @@ public class PuzzleActivity extends AppCompatActivity {
     private static final String NAME_ELAPSED_TIME = "elapsedTime";
     private static final String NAME_SOLVE_TIME = "solveTime";
     private static final String NAME_ID = "id";
+
+    // Bundle difficulty name when passing to DifficultyDialog also used for SharedPreferences
+    public static final String NAME_DIFFICULTY = "difficulty";
+
+    public static final String NAME_GAME_SCORES = "gameScores";
 
     // The random number generator used to mix up the puzzle
     private static final Random RANDOM_GENERATOR = new Random(System.currentTimeMillis());
@@ -87,11 +104,10 @@ public class PuzzleActivity extends AppCompatActivity {
     public static final int DIFFICULTY2 = 2;       // Medium
     public static final int DIFFICULTY3 = 3;       // Hard
 
-    // Bundle difficulty name when passing to DifficultyDialog
-    public static final String NAME_DIFFICULTY = "Difficulty";
-
     // Current game difficulty level
-    private  int difficulty = DIFFICULTY1;
+    private int difficulty = DIFFICULTY1;
+
+    private List<GameScore> gameScores = new ArrayList<>();
 
     /*
      * This OnClickListener handles the actions associated with tapping on a tile (switching it with the empty tile,
@@ -195,11 +211,13 @@ public class PuzzleActivity extends AppCompatActivity {
         movesView = (TextView) findViewById(R.id.moves);
         timeView = (TextView) findViewById(R.id.elapsedTime);
 
-		difficulty = getSharedPreferences(NAME, MODE_PRIVATE)
-							.getInt(NAME_DIFFICULTY, DIFFICULTY1);
+        // Retrieve the difficulty level
+        SharedPreferences sharedPreferences = getSharedPreferences(NAME, MODE_PRIVATE);
+		difficulty = sharedPreferences.getInt(NAME_DIFFICULTY, DIFFICULTY1);
+
+        retrieveGameScores(sharedPreferences.getString(NAME_GAME_SCORES, "[]"));
 
         if (savedInstanceState == null) {
-//            randomizeTiles();
 			initialize();
             timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(timer.elapsedTime));
         } else {
@@ -307,6 +325,15 @@ public class PuzzleActivity extends AppCompatActivity {
         }
 
         return false;
+    }
+
+    private void retrieveGameScores(String jsonString) {
+        if (jsonString.equals("[]"))
+            return;
+
+        Gson gameScoresGson = new Gson();
+        Type gameScoreType = new TypeToken<List<GameScore>>() {}.getType();
+        gameScores = gameScoresGson.fromJson(jsonString, gameScoreType);
     }
 
     /*
@@ -531,7 +558,16 @@ public class PuzzleActivity extends AppCompatActivity {
 			solveTime = timer.elapsedTime;
 			timer = null;
 			timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
-		}
+
+            // Save the GameScore history
+            Gson gameScoreGson = new Gson();
+            Type gameScoreType = new TypeToken<List<GameScore>>() {}.getType();
+            gameScores.add(new GameScore(new Date(), solveTime, moves, difficulty));
+            getSharedPreferences(NAME, MODE_PRIVATE)
+                    .edit()
+                    .putString(NAME_GAME_SCORES, gameScoreGson.toJson(gameScores, gameScoreType))
+                    .apply();
+        }
 	}
 
 	public void onDifficultySelected(int difficulty) {
