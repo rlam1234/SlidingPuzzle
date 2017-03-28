@@ -16,5 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".PuzzleActivity" />
+        <activity android:name=".SolvedActivity" />
+        <activity android:name=".HistoryActivity" />
     </application>
 </manifest>
