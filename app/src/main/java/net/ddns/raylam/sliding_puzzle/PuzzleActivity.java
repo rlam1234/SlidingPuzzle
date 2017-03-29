@@ -565,7 +565,8 @@ public class PuzzleActivity extends AppCompatActivity {
         int totalHours = totalMinutes / 60;
         int hour = totalHours % 24;
 
-        return (hour <= 9 ? "0" : "") + hour + ":" + (minute <= 9 ? "0" : "") + minute + ":" + (second <= 9 ? "0" : "") + second;
+//        return (hour <= 9 ? "0" : "") + hour + ":" + (minute <= 9 ? "0" : "") + minute + ":" + (second <= 9 ? "0" : "") + second;
+        return String.format("%02d:%02d:%02d", hour, minute, second);
     }
 
     private void puzzleSolved() {

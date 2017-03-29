@@ -24,21 +24,21 @@ import net.ddns.raylam.sliding_puzzle.data.GameHistory;
 public class HistoryLayout extends LinearLayout {
     private static final String NAME = HistoryLayout.class.getSimpleName();
     private static final AttributeSet DEFAULT_ATTRIBUTE_SET = null;
+    private static final int DEFAULT_DEF_STYLE_ATTR = 0;
     private HistoryActivity.Adapter adapter;
     private HistoryAdapter historyAdapter;
 
     public HistoryLayout(final Context context) {
-        this(context, DEFAULT_ATTRIBUTE_SET,0);
+        this(context, DEFAULT_ATTRIBUTE_SET, DEFAULT_DEF_STYLE_ATTR);
     }
 
     public HistoryLayout(final Context context, final AttributeSet attributeSet) {
-        this(context, attributeSet, 0);
+        this(context, attributeSet, DEFAULT_DEF_STYLE_ATTR);
     }
 
     public HistoryLayout(final Context context, final AttributeSet attributeSet, final int defStyleAttr) {
         super(context, attributeSet, defStyleAttr);
-//        historyAdapter = new HistoryAdapter(context, this);
-        historyAdapter = new HistoryAdapter(context);
+        historyAdapter = new HistoryAdapter(context, this);
     }
 
     @Override

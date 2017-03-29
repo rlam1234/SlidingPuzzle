@@ -26,7 +26,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<CellViewHolder> {
 //    private final OnHistoryClickListener historyClickListener;
 
 //    public HistoryAdapter(Context context, OnHistoryClickListener historyClickListener) {
-    public HistoryAdapter(Context context) {
+    public HistoryAdapter(Context context, ViewGroup layout) {
         layoutInflater = LayoutInflater.from(context);
 //        this.historyClickListener = historyClickListener;
         setHasStableIds(true);
