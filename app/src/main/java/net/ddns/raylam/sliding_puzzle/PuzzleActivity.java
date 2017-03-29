@@ -75,7 +75,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
     private int moves = 0;				// Number of moves taken so far
     private TimerTask timer;
-    private int solveTime = -1;			// Time taken to solve the puzzle (in seconds)
+    private int solveTime = 0;			// Time taken to solve the puzzle (in seconds)
     private TextView movesView;
     private TextView timeView;
 
