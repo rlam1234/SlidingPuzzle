@@ -50,6 +50,7 @@ public class HistoryLayout extends LinearLayout {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(historyAdapter);
+
     }
 
     public void setAdapter(final HistoryActivity.Adapter adapter) {
