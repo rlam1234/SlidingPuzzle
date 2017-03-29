@@ -9,6 +9,7 @@
  */
 package net.ddns.raylam.sliding_puzzle;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -19,9 +20,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import net.ddns.raylam.sliding_puzzle.data.GameHistory;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 import net.ddns.raylam.sliding_puzzle.ui.history.HistoryLayout;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +38,8 @@ public class HistoryActivity extends AppCompatActivity {
     private static final int DIFFICULTY_MEDIUM = 1;
     private static final int DIFFICULTY_HARD = 2;
 
+    private List<List<SolveHistory>> historyList = new ArrayList<List<SolveHistory>>(3);
+
     public static final class Adapter extends PagerAdapter {
         private static final String NAME = Adapter.class.getSimpleName();
 
@@ -40,8 +47,6 @@ public class HistoryActivity extends AppCompatActivity {
         private final ViewPager viewPager;
         private HistoryLayout historyLayout;
         private int difficultyPage = DIFFICULTY_EASY;
-
-        private List<List<GameHistory>> historyList = new ArrayList<List<GameHistory>>();
 
         private Adapter(ViewPager viewPager) {
             Log.w(NAME, "entering constructor Adapter(" + viewPager + ")");
@@ -65,11 +70,11 @@ public class HistoryActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int difficultyPage) {
             switch(difficultyPage) {
                 case DIFFICULTY_HARD:
-                    return ((AppCompatActivity) viewPager.getContext()).getString(R.string.difficultyText3);
+                    return ((AppCompatActivity) viewPager.getContext()).getString(R.string.play_history_hard);
                 case DIFFICULTY_MEDIUM:
-                    return ((AppCompatActivity) viewPager.getContext()).getString(R.string.difficultyText2);
+                    return ((AppCompatActivity) viewPager.getContext()).getString(R.string.play_history_medium);
                 default: case DIFFICULTY_EASY:
-                    return ((AppCompatActivity) viewPager.getContext()).getString(R.string.difficultyText1);
+                    return ((AppCompatActivity) viewPager.getContext()).getString(R.string.play_history_easy);
             }
         }
 
@@ -93,9 +98,9 @@ public class HistoryActivity extends AppCompatActivity {
             return view;
         }
 
-        public void onDisplayHistory(GameHistory gameHistory, int difficultyPage, int historyPosition) {
+        public void onDisplayHistory(SolveHistory solveHistory, int difficultyPage, int historyPosition) {
             viewPager.setCurrentItem(difficultyPage, true);
-            historyLayout.updateHistory(gameHistory, historyPosition);
+            historyLayout.updateHistory(solveHistory, historyPosition);
         }
     }   // end class Adapter
 
@@ -103,6 +108,14 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.historyactivity);
+
+        Log.w(NAME, "entering onCreate(" + savedInstanceState + ")");
+
+        SharedPreferences sharedPreferences = getSharedPreferences(PuzzleActivity.NAME, MODE_PRIVATE);
+
+        retrieveGameHistory(sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY1, "[]"),
+                            sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY2, "[]"),
+                            sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY3, "[]"));
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(new Adapter(viewPager));
@@ -117,15 +130,6 @@ public class HistoryActivity extends AppCompatActivity {
             public void onPageSelected(int page) {
                 Log.w(NAME, "onCreate: entering onPageSelected(" + page + ")");
 
-                TextView historyTitle = (TextView) findViewById(R.id.historyTitle);
-                if (page == DIFFICULTY_EASY) {
-                    historyTitle.setText(getString(R.string.play_history_easy));
-                } else if (page == DIFFICULTY_MEDIUM) {
-                    historyTitle.setText(getString(R.string.play_history_medium));
-                } else {
-                    historyTitle.setText(getString(R.string.play_history_hard));
-                }
-
                 previousPage = page;
             }
 
@@ -134,5 +138,30 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
     }   // end onCreate
+
+    private void retrieveGameHistory(final String easyJson, final String mediumJson, final String hardJson) {
+        Gson historyGson = new Gson();
+        Type historyType = new TypeToken<List<SolveHistory>>() {}.getType();
+
+        if (easyJson == null || easyJson.equals("[]")) {
+            historyList.add(new ArrayList<SolveHistory>());
+        } else {
+            historyList.add((ArrayList<SolveHistory>) historyGson.fromJson(easyJson, historyType));
+        }
+
+        if (mediumJson == null || mediumJson.equals("[]")) {
+            historyList.add(new ArrayList<SolveHistory>());
+        } else {
+            historyList.add((ArrayList<SolveHistory>) historyGson.fromJson(mediumJson, historyType));
+        }
+
+        if (hardJson == null || hardJson.equals("[]")) {
+            historyList.add(new ArrayList<SolveHistory>());
+        } else {
+            historyList.add((ArrayList<SolveHistory>) historyGson.fromJson(hardJson, historyType));
+        }
+
+        Log.w(NAME, "retrieveGameHistory:\nEasy = " + historyList.get(DIFFICULTY_EASY) + "\nMedium = " + historyList.get(DIFFICULTY_MEDIUM) + "\nHard = " + historyList.get(DIFFICULTY_HARD));
+    }
 
 }

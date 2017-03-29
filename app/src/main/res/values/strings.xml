@@ -27,4 +27,5 @@
     <string name="play_history_easy">Play History (Easy)</string>
     <string name="play_history_medium">Play History (Medium)</string>
     <string name="play_history_hard">Play History (Hard)</string>
+    <string name="solveHistoryTitle">Puzzle Solve History</string>
 </resources>

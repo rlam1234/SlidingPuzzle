@@ -29,7 +29,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import net.ddns.raylam.sliding_puzzle.data.GameHistory;
+import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 import net.ddns.raylam.sliding_puzzle.data.Tile;
 
 import java.lang.ref.WeakReference;
@@ -107,9 +107,9 @@ public class PuzzleActivity extends AppCompatActivity {
     // Current game difficulty level
     private int difficulty = DIFFICULTY1;
 
-    private List<GameHistory> easyHistory = new ArrayList<>();
-    private List<GameHistory> mediumHistory = new ArrayList<>();
-    private List<GameHistory> hardHistory = new ArrayList<>();
+    private List<SolveHistory> easyHistory = new ArrayList<>();
+    private List<SolveHistory> mediumHistory = new ArrayList<>();
+    private List<SolveHistory> hardHistory = new ArrayList<>();
 
     /*
      * This OnClickListener handles the actions associated with tapping on a tile (switching it with the empty tile,
@@ -334,7 +334,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
     private void retrieveGameHistory(final String easyJson, final String mediumJson, final String hardJson) {
         Gson historyGson = new Gson();
-        Type historyType = new TypeToken<List<GameHistory>>() {}.getType();
+        Type historyType = new TypeToken<List<SolveHistory>>() {}.getType();
 
         if (easyJson == null || easyJson.equals("[]")) {
             easyHistory = new ArrayList<>();
@@ -579,7 +579,7 @@ public class PuzzleActivity extends AppCompatActivity {
 			timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
 
             // Save the game play history
-            onHistoryChanged(difficulty, new GameHistory(new Date(), solveTime, moves, difficulty));
+            onHistoryChanged(difficulty, new SolveHistory(new Date(), solveTime, moves, difficulty));
 
             startActivity(new Intent(PuzzleActivity.this, SolvedActivity.class));
         }
@@ -593,24 +593,24 @@ public class PuzzleActivity extends AppCompatActivity {
 			.apply();
     }
 
-    public void onHistoryChanged(int difficulty, GameHistory gameHistory) {
+    public void onHistoryChanged(int difficulty, SolveHistory solveHistory) {
         Gson historyGson = new Gson();
-        Type historyType = new TypeToken<List<GameHistory>>() {}.getType();
+        Type historyType = new TypeToken<List<SolveHistory>>() {}.getType();
 
         if (difficulty == DIFFICULTY1) {
-            easyHistory.add(gameHistory);
+            easyHistory.add(solveHistory);
             getSharedPreferences(NAME, MODE_PRIVATE)
                     .edit()
                     .putString(NAME_GAME_HISTORY1, historyGson.toJson(easyHistory, historyType))
                     .apply();
         } else if (difficulty == DIFFICULTY2) {
-            mediumHistory.add(gameHistory);
+            mediumHistory.add(solveHistory);
             getSharedPreferences(NAME, MODE_PRIVATE)
                     .edit()
                     .putString(NAME_GAME_HISTORY2, historyGson.toJson(mediumHistory, historyType))
                     .apply();
         } else if (difficulty == DIFFICULTY3) {
-            hardHistory.add(gameHistory);
+            hardHistory.add(solveHistory);
             getSharedPreferences(NAME, MODE_PRIVATE)
                     .edit()
                     .putString(NAME_GAME_HISTORY3, historyGson.toJson(hardHistory, historyType))
@@ -618,7 +618,7 @@ public class PuzzleActivity extends AppCompatActivity {
         }
     }
 
-    public List<GameHistory> getHistory(int difficulty) {
+    public List<SolveHistory> getHistory(int difficulty) {
         if (difficulty == DIFFICULTY1) {
             return easyHistory;
         } else if (difficulty == DIFFICULTY2) {

@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 
 import net.ddns.raylam.sliding_puzzle.HistoryActivity;
 import net.ddns.raylam.sliding_puzzle.R;
-import net.ddns.raylam.sliding_puzzle.data.GameHistory;
+import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 
 public class HistoryLayout extends LinearLayout {
     private static final String NAME = HistoryLayout.class.getSimpleName();
@@ -57,11 +57,11 @@ public class HistoryLayout extends LinearLayout {
         this.adapter = adapter;
     }
 
-    public void updateHistory(GameHistory gameHistory, int position) {
-        Log.w(NAME, "entering updateHistory (" + gameHistory + ", " + position + ")");
+    public void updateHistory(SolveHistory solveHistory, int position) {
+        Log.w(NAME, "entering updateHistory (" + solveHistory + ", " + position + ")");
 
-        if (gameHistory != null) {
-            historyAdapter.history.add(gameHistory);
+        if (solveHistory != null) {
+            historyAdapter.history.add(solveHistory);
             historyAdapter.notifyItemChanged(historyAdapter.history.size() - 1);
         }
     }

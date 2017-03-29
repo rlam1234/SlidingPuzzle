@@ -11,8 +11,8 @@ package net.ddns.raylam.sliding_puzzle.ui.history;
 
 import android.support.annotation.NonNull;
 
-import net.ddns.raylam.sliding_puzzle.data.GameHistory;
+import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 
 public interface OnHistoryClickListener {
-    void onHistoryClick(@NonNull GameHistory gameHistory, int position);
+    void onHistoryClick(@NonNull SolveHistory solveHistory, int position);
 }

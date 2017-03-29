@@ -4,6 +4,12 @@
     android:id="@+id/viewPager"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/solveHistoryTitle"
+        android:text="@string/solveHistoryTitle"
+        android:textSize="@dimen/tileSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <android.support.v4.view.PagerTitleStrip
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

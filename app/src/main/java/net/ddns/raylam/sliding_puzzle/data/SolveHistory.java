@@ -9,18 +9,22 @@
  */
 package net.ddns.raylam.sliding_puzzle.data;
 
+/*
+ *  This model stores the puzzle solve details: the date/time the puzzle was solved,
+ *  the time taken to solve the puzzle, the number of moves required and the difficulty level.
+ */
 
 import java.util.Date;
 
-public class GameHistory {
+public class SolveHistory {
     public Date date = new Date();
     public int elapsedTime;
     public int moves;
     public int difficulty;
 
-    public GameHistory() {};
+    public SolveHistory() {};
 
-    public GameHistory(Date date, int elapsedTime, int moves, int difficulty) {
+    public SolveHistory(Date date, int elapsedTime, int moves, int difficulty) {
         if (date != null)
             this.date = date;
 
@@ -33,7 +37,7 @@ public class GameHistory {
         this.difficulty = difficulty;
     }
 
-    public GameHistory(String date, String elapsedTime, String moves, String difficulty) {
+    public SolveHistory(String date, String elapsedTime, String moves, String difficulty) {
         this.date = new Date(Date.parse(date));
         this.elapsedTime = Integer.parseInt(elapsedTime);
         this.moves = Integer.parseInt(moves);
@@ -47,6 +51,6 @@ public class GameHistory {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof GameHistory && date.equals(((GameHistory) o).date);
+        return o instanceof SolveHistory && date.equals(((SolveHistory) o).date);
     }
 }

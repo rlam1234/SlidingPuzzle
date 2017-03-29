@@ -10,23 +10,28 @@
 package net.ddns.raylam.sliding_puzzle.ui.history;
 
 import android.content.Context;
+import android.net.LocalSocketAddress;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import net.ddns.raylam.sliding_puzzle.R;
-import net.ddns.raylam.sliding_puzzle.data.GameHistory;
+import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<CellViewHolder> {
-    public List<GameHistory> history = new ArrayList<>();            // game play historyactivity
+    private static final String NAME = HistoryAdapter.class.getSimpleName();
+
+    public List<SolveHistory> history = new ArrayList<>();            // game play historyactivity
     private final LayoutInflater layoutInflater;
 //    private final OnHistoryClickListener historyClickListener;
 
 //    public HistoryAdapter(Context context, OnHistoryClickListener historyClickListener) {
     public HistoryAdapter(Context context, ViewGroup layout) {
+        Log.w(NAME, "constructing HistoryAdapter(" + context + ", " + layout + ")");
         layoutInflater = LayoutInflater.from(context);
 //        this.historyClickListener = historyClickListener;
         setHasStableIds(true);

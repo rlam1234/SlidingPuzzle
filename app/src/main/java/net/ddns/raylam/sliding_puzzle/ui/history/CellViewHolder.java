@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import net.ddns.raylam.sliding_puzzle.R;
-import net.ddns.raylam.sliding_puzzle.data.GameHistory;
+import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 
 public class CellViewHolder extends RecyclerView.ViewHolder {
     private static final String NAME = CellViewHolder.class.getSimpleName();
@@ -30,6 +30,8 @@ public class CellViewHolder extends RecyclerView.ViewHolder {
     public CellViewHolder(View itemView) {
         super(itemView);
 
+        Log.w(NAME, "constructing CellViewHolder(" + itemView + ")");
+
         date = (TextView) itemView.findViewById(R.id.dateCell);
         elapsedTime = (TextView) itemView.findViewById(R.id.elapsedTimeCell);
         moves = (TextView) itemView.findViewById(R.id.movesCell);
@@ -39,19 +41,19 @@ public class CellViewHolder extends RecyclerView.ViewHolder {
 //            @Override
 //            public void onClick(View v) {
 //                if (historyClickListener != null) {
-//                    GameHistory gameScore = new GameHistory(date.getText().toString(), elapsedTime.getText().toString(), moves.getText().toString(), difficulty.getText().toString());
+//                    SolveHistory gameScore = new SolveHistory(date.getText().toString(), elapsedTime.getText().toString(), moves.getText().toString(), difficulty.getText().toString());
 //                    historyClickListener.onHistoryClick(gameScore, position);
 //                }
 //            }
 //        });
     }
 
-    public void update(GameHistory gameHistory, int position) {
-        Log.w(NAME, "entering update(" + gameHistory + ", " + position + ")");
-        date.setText(gameHistory.date.toString());
-        elapsedTime.setText(gameHistory.elapsedTime);
-        moves.setText(gameHistory.moves);
-//        difficulty.setText(gameHistory.difficulty);
+    public void update(SolveHistory solveHistory, int position) {
+        Log.w(NAME, "entering update(" + solveHistory + ", " + position + ")");
+        date.setText(solveHistory.date.toString());
+        elapsedTime.setText(solveHistory.elapsedTime);
+        moves.setText(solveHistory.moves);
+//        difficulty.setText(solveHistory.difficulty);
         this.position = position;
     }
 }
