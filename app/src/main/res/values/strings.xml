@@ -24,8 +24,8 @@
     <string name="helpText">Slide the tiles around until they appear in proper order with the empty tile placed in the bottom right. \n\nTap a tile to slide it into the empty square; only tiles adjacent to the empty square may slide into it.</string>
     <string name="aboutItem">About</string>
     <string name="aboutText">This <i>Sliding Tile Puzzle</i> application for Android™ was created by Raymond Lam for the final project of <i>SCS2682: Mobile Applications for Android Devices</i>. \n\nCopyright © 2017 Raymond Lam. All rights reserved. \n\nNo part of this application, either code or image, may be used for any purpose other than to evaluate his programming style. Therefore, any reproduction or modification by any means is strictly prohibited without prior written permission.</string>
-    <string name="play_history_easy">Play History (Easy)</string>
-    <string name="play_history_medium">Play History (Medium)</string>
-    <string name="play_history_hard">Play History (Hard)</string>
+    <string name="play_history_easy">Easy Difficulty</string>
+    <string name="play_history_medium">Medium Difficulty</string>
+    <string name="play_history_hard">Hard Difficulty</string>
     <string name="solveHistoryTitle">Puzzle Solve History</string>
 </resources>

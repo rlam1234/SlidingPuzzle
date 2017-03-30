@@ -9,11 +9,15 @@
  */
 package net.ddns.raylam.sliding_puzzle.ui.history;
 
+import java.text.SimpleDateFormat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import java.text.Format;
+import java.util.Date;
+import net.ddns.raylam.sliding_puzzle.PuzzleActivity;
 import net.ddns.raylam.sliding_puzzle.R;
 import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 
@@ -23,10 +27,8 @@ public class CellViewHolder extends RecyclerView.ViewHolder {
     private TextView date;
     private TextView elapsedTime;
     private TextView moves;
-//    private TextView difficulty;
     private int position;           // position in game play history
 
-//    public CellViewHolder(View itemView, final OnHistoryClickListener historyClickListener) {
     public CellViewHolder(View itemView) {
         super(itemView);
 
@@ -35,25 +37,18 @@ public class CellViewHolder extends RecyclerView.ViewHolder {
         date = (TextView) itemView.findViewById(R.id.dateCell);
         elapsedTime = (TextView) itemView.findViewById(R.id.elapsedTimeCell);
         moves = (TextView) itemView.findViewById(R.id.movesCell);
-//        difficulty = (TextView) itemView.findViewById(R.id.difficultyCell);
 
-//        itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (historyClickListener != null) {
-//                    SolveHistory gameScore = new SolveHistory(date.getText().toString(), elapsedTime.getText().toString(), moves.getText().toString(), difficulty.getText().toString());
-//                    historyClickListener.onHistoryClick(gameScore, position);
-//                }
-//            }
-//        });
+        Format dateFormat = android.text.format.DateFormat.getDateFormat(itemView.getContext());
+        String pattern = ((SimpleDateFormat) dateFormat).toLocalizedPattern();
+
+        Log.w(NAME, "date = " + ((SimpleDateFormat) dateFormat).format(new Date()));
     }
 
     public void update(SolveHistory solveHistory, int position) {
         Log.w(NAME, "entering update(" + solveHistory + ", " + position + ")");
         date.setText(solveHistory.date.toString());
-        elapsedTime.setText(solveHistory.elapsedTime);
-        moves.setText(solveHistory.moves);
-//        difficulty.setText(solveHistory.difficulty);
+        elapsedTime.setText(PuzzleActivity.intToHHMMSS(solveHistory.elapsedTime));
+        moves.setText("" + solveHistory.moves);
         this.position = position;
     }
 }

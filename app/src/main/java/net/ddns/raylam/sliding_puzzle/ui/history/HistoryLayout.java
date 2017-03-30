@@ -18,6 +18,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.LinearLayout;
 
+import android.widget.TextView;
 import net.ddns.raylam.sliding_puzzle.HistoryActivity;
 import net.ddns.raylam.sliding_puzzle.R;
 import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
@@ -26,23 +27,23 @@ import java.util.List;
 
 public class HistoryLayout extends LinearLayout {
     private static final String NAME = HistoryLayout.class.getSimpleName();
+
     private static final AttributeSet DEFAULT_ATTRIBUTE_SET = null;
     private static final int DEFAULT_DEF_STYLE_ATTR = 0;
     private HistoryActivity.Adapter adapter;
     private HistoryAdapter historyAdapter;
-    private List<SolveHistory> history;
 
     public HistoryLayout(final Context context) {
         this(context, DEFAULT_ATTRIBUTE_SET, DEFAULT_DEF_STYLE_ATTR);
     }
 
-    public HistoryLayout(final Context context, final AttributeSet attributeSet, List<SolveHistory> history) {
+    public HistoryLayout(final Context context, final AttributeSet attributeSet) {
         this(context, attributeSet, DEFAULT_DEF_STYLE_ATTR);
     }
 
     public HistoryLayout(final Context context, final AttributeSet attributeSet, final int defStyleAttr) {
         super(context, attributeSet, defStyleAttr);
-        historyAdapter = new HistoryAdapter(context, this, history);
+        historyAdapter = new HistoryAdapter(context, this);
     }
 
     @Override
@@ -60,7 +61,17 @@ public class HistoryLayout extends LinearLayout {
         this.adapter = adapter;
     }
 
-    public void setHistory(@NonNull List<SolveHistory> history) { this.history = history; }
+    public void setHistory(@NonNull List<SolveHistory> history) {
+		Log.w(NAME, "setHistory: setting history to " + history);
+
+        historyAdapter.history = history;
+		if (history.size() != 0) {
+			((TextView) findViewById(R.id.nothingText)).setVisibility(GONE);
+
+			for (int i = 0; i < history.size(); i++)
+				historyAdapter.notifyItemChanged(i);
+		}
+    }
 
     public void updateHistory(SolveHistory solveHistory, int position) {
         Log.w(NAME, "entering updateHistory (" + solveHistory + ", " + position + ")");

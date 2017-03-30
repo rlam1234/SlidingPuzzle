@@ -18,6 +18,7 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -553,7 +554,7 @@ public class PuzzleActivity extends AppCompatActivity {
         return tilesToString;
     }
 
-    private String intToHHMMSS(int time) {
+    public static String intToHHMMSS(int time) {
         if (time <= 0)
             return "00:00:00";
 
@@ -565,7 +566,6 @@ public class PuzzleActivity extends AppCompatActivity {
         int totalHours = totalMinutes / 60;
         int hour = totalHours % 24;
 
-//        return (hour <= 9 ? "0" : "") + hour + ":" + (minute <= 9 ? "0" : "") + minute + ":" + (second <= 9 ? "0" : "") + second;
         return String.format("%02d:%02d:%02d", hour, minute, second);
     }
 
@@ -573,8 +573,8 @@ public class PuzzleActivity extends AppCompatActivity {
 		// timer can be null if the user solves the puzzle and continues to move the tiles around to solve it again
 		// before the timer can be cancelled the first time around.
 		if (timer != null) {
+            solveTime = timer.elapsedTime;
 			timer.cancel(true);
-			solveTime = timer.elapsedTime;
 			timer = null;
 			timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
 

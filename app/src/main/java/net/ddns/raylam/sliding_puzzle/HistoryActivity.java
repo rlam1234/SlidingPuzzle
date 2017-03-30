@@ -44,7 +44,6 @@ public class HistoryActivity extends AppCompatActivity {
         private final LayoutInflater layoutInflater;
         private final ViewPager viewPager;
         private HistoryLayout historyLayout;
-        private int difficultyPage = DIFFICULTY_EASY;
         private List<List<SolveHistory>> historyList = new ArrayList<List<SolveHistory>>(3);
 
         private Adapter(ViewPager viewPager) {
@@ -123,24 +122,24 @@ public class HistoryActivity extends AppCompatActivity {
                 sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY3, "[]"));
 
         viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            private int previousPage = PuzzleActivity.DIFFICULTY1;
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int page) {
-                Log.w(NAME, "onCreate: entering onPageSelected(" + page + ")");
-
-                previousPage = page;
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
+//        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            private int previousPage = PuzzleActivity.DIFFICULTY1;
+//
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//            }
+//
+//            @Override
+//            public void onPageSelected(int page) {
+//                Log.w(NAME, "onCreate: entering onPageSelected(" + page + ")");
+//
+//                previousPage = page;
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//            }
+//        });
     }   // end onCreate
 
     private void retrieveGameHistory(final String easyJson, final String mediumJson, final String hardJson) {

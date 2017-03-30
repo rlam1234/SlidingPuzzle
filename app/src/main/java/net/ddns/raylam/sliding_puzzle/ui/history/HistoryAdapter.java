@@ -25,14 +25,13 @@ import java.util.List;
 public class HistoryAdapter extends RecyclerView.Adapter<CellViewHolder> {
     private static final String NAME = HistoryAdapter.class.getSimpleName();
 
-    public List<SolveHistory> history;
+    public List<SolveHistory> history = new ArrayList<>();
     private final LayoutInflater layoutInflater;
 
-    public HistoryAdapter(Context context, ViewGroup layout, List<SolveHistory> history) {
-        Log.w(NAME, "constructing HistoryAdapter(" + context + ", " + layout + ", " + history + ")");
+    public HistoryAdapter(Context context, ViewGroup layout) {
+        Log.w(NAME, "constructing HistoryAdapter(" + context + ", " + layout + ")");
 
         layoutInflater = LayoutInflater.from(context);
-        this.history = history == null ? new ArrayList<SolveHistory>() : history;
         setHasStableIds(true);
     }
 
@@ -48,6 +47,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<CellViewHolder> {
 
     @Override
     public void onBindViewHolder(CellViewHolder holder, int position) {
+		Log.w(NAME, "onBindViewHolder: invoking holder.update(" + history.get(position) + ", " + position + ")");
+
         holder.update(history.get(position), position);
     }
 
