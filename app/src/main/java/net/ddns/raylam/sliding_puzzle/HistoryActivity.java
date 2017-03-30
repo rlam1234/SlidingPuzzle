@@ -29,6 +29,7 @@ import net.ddns.raylam.sliding_puzzle.ui.history.HistoryLayout;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.Attributes;
 
 public class HistoryActivity extends AppCompatActivity {
     public static final String NAME = HistoryActivity.class.getSimpleName();
@@ -47,16 +48,13 @@ public class HistoryActivity extends AppCompatActivity {
         private List<List<SolveHistory>> historyList = new ArrayList<List<SolveHistory>>(3);
 
         private Adapter(ViewPager viewPager) {
-            Log.w(NAME, "entering constructor Adapter(" + viewPager + ")");
             this.viewPager = viewPager;
             layoutInflater = LayoutInflater.from(viewPager.getContext());
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            Log.w(NAME, "entering destroyItem(" + container + ", " + position + ", " + object);
             container.removeView((View) object);
-            ((AppCompatActivity) container.getContext()).finish();
         }
 
         @Override
@@ -90,16 +88,9 @@ public class HistoryActivity extends AppCompatActivity {
                 historyLayout = (HistoryLayout) view;
                 historyLayout.setHistory(historyList.get(difficulty));
                 historyLayout.setAdapter(this);
-            } else {
-                Log.w(NAME, "instantiateItem: view can be something other than HistoryLayout: " + view);
             }
 
             return view;
-        }
-
-        public void onDisplayHistory(SolveHistory solveHistory, int difficultyPage, int historyPosition) {
-            viewPager.setCurrentItem(difficultyPage, true);
-            historyLayout.updateHistory(solveHistory, historyPosition);
         }
     }   // end class Adapter
 
@@ -110,36 +101,15 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.historyactivity);
 
-        Log.w(NAME, "entering onCreate(" + savedInstanceState + ")");
-
-        SharedPreferences sharedPreferences = getSharedPreferences(PuzzleActivity.NAME, MODE_PRIVATE);
-
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         adapter = new Adapter(viewPager);
 
+        SharedPreferences sharedPreferences = getSharedPreferences(PuzzleActivity.NAME, MODE_PRIVATE);
         retrieveGameHistory(sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY1, "[]"),
                 sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY2, "[]"),
                 sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY3, "[]"));
 
         viewPager.setAdapter(adapter);
-//        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            private int previousPage = PuzzleActivity.DIFFICULTY1;
-//
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//            }
-//
-//            @Override
-//            public void onPageSelected(int page) {
-//                Log.w(NAME, "onCreate: entering onPageSelected(" + page + ")");
-//
-//                previousPage = page;
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//            }
-//        });
     }   // end onCreate
 
     private void retrieveGameHistory(final String easyJson, final String mediumJson, final String hardJson) {
@@ -163,10 +133,6 @@ public class HistoryActivity extends AppCompatActivity {
         } else {
             adapter.historyList.add((ArrayList<SolveHistory>) historyGson.fromJson(hardJson, historyType));
         }
-
-        Log.w(NAME,     "retrieveGameHistory:\nEasy = " + adapter.historyList.get(DIFFICULTY_EASY)
-                    +   "\nMedium = " + adapter.historyList.get(DIFFICULTY_MEDIUM)
-                    +   "\nHard = " + adapter.historyList.get(DIFFICULTY_HARD));
     }
 
 }

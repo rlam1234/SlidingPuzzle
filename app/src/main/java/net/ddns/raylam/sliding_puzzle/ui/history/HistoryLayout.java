@@ -43,6 +43,7 @@ public class HistoryLayout extends LinearLayout {
 
     public HistoryLayout(final Context context, final AttributeSet attributeSet, final int defStyleAttr) {
         super(context, attributeSet, defStyleAttr);
+
         historyAdapter = new HistoryAdapter(context, this);
     }
 
@@ -62,20 +63,14 @@ public class HistoryLayout extends LinearLayout {
     }
 
     public void setHistory(@NonNull List<SolveHistory> history) {
-		Log.w(NAME, "setHistory: setting history to " + history);
-
         historyAdapter.history = history;
 		if (history.size() != 0) {
 			((TextView) findViewById(R.id.nothingText)).setVisibility(GONE);
-
-			for (int i = 0; i < history.size(); i++)
-				historyAdapter.notifyItemChanged(i);
+            ((LinearLayout) findViewById(R.id.titleLayout)).setVisibility(VISIBLE);
 		}
     }
 
     public void updateHistory(SolveHistory solveHistory, int position) {
-        Log.w(NAME, "entering updateHistory (" + solveHistory + ", " + position + ")");
-
         if (solveHistory != null) {
             historyAdapter.history.add(solveHistory);
             historyAdapter.notifyItemChanged(historyAdapter.history.size() - 1);

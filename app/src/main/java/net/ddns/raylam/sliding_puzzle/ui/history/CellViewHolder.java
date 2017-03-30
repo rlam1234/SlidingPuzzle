@@ -27,28 +27,29 @@ public class CellViewHolder extends RecyclerView.ViewHolder {
     private TextView date;
     private TextView elapsedTime;
     private TextView moves;
-    private int position;           // position in game play history
+
+    private final Format DATE_FORMAT;
+    private final Format TIME_FORMAT;
 
     public CellViewHolder(View itemView) {
         super(itemView);
-
-        Log.w(NAME, "constructing CellViewHolder(" + itemView + ")");
 
         date = (TextView) itemView.findViewById(R.id.dateCell);
         elapsedTime = (TextView) itemView.findViewById(R.id.elapsedTimeCell);
         moves = (TextView) itemView.findViewById(R.id.movesCell);
 
-        Format dateFormat = android.text.format.DateFormat.getDateFormat(itemView.getContext());
-        String pattern = ((SimpleDateFormat) dateFormat).toLocalizedPattern();
-
-        Log.w(NAME, "date = " + ((SimpleDateFormat) dateFormat).format(new Date()));
+        DATE_FORMAT = android.text.format.DateFormat.getDateFormat(itemView.getContext());
+        TIME_FORMAT = android.text.format.DateFormat.getTimeFormat(itemView.getContext());
     }
 
     public void update(SolveHistory solveHistory, int position) {
-        Log.w(NAME, "entering update(" + solveHistory + ", " + position + ")");
-        date.setText(solveHistory.date.toString());
+        String dateTime = ((SimpleDateFormat) DATE_FORMAT).format(solveHistory.date)
+                +   " "
+                +   ((SimpleDateFormat) TIME_FORMAT).format(solveHistory.date);
+
+        // Set the date to the first 20 characters to make sure we don't overflow the field
+        date.setText(dateTime.substring(0, dateTime.length() < 20 ? dateTime.length() : 20));
         elapsedTime.setText(PuzzleActivity.intToHHMMSS(solveHistory.elapsedTime));
         moves.setText("" + solveHistory.moves);
-        this.position = position;
     }
 }

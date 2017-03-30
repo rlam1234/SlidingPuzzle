@@ -29,12 +29,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<CellViewHolder> {
     private final LayoutInflater layoutInflater;
 
     public HistoryAdapter(Context context, ViewGroup layout) {
-        Log.w(NAME, "constructing HistoryAdapter(" + context + ", " + layout + ")");
-
         layoutInflater = LayoutInflater.from(context);
         setHasStableIds(true);
     }
 
+    // Returns the stable ID for the item at the given position
     @Override
     public long getItemId(int position) {
         return position;
@@ -47,8 +46,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<CellViewHolder> {
 
     @Override
     public void onBindViewHolder(CellViewHolder holder, int position) {
-		Log.w(NAME, "onBindViewHolder: invoking holder.update(" + history.get(position) + ", " + position + ")");
-
         holder.update(history.get(position), position);
     }
 

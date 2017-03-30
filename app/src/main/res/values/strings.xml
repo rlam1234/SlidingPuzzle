@@ -28,4 +28,7 @@
     <string name="play_history_medium">Medium Difficulty</string>
     <string name="play_history_hard">Hard Difficulty</string>
     <string name="solveHistoryTitle">Puzzle Solve History</string>
+    <string name="dateTitle">Date/Time</string>
+    <string name="elapsedTimeTitle">Time</string>
+    <string name="movesTitle">Moves</string>
 </resources>
