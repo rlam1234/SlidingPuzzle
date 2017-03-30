@@ -38,8 +38,6 @@ public class HistoryActivity extends AppCompatActivity {
     private static final int DIFFICULTY_MEDIUM = 1;
     private static final int DIFFICULTY_HARD = 2;
 
-    private List<List<SolveHistory>> historyList = new ArrayList<List<SolveHistory>>(3);
-
     public static final class Adapter extends PagerAdapter {
         private static final String NAME = Adapter.class.getSimpleName();
 
@@ -47,6 +45,7 @@ public class HistoryActivity extends AppCompatActivity {
         private final ViewPager viewPager;
         private HistoryLayout historyLayout;
         private int difficultyPage = DIFFICULTY_EASY;
+        private List<List<SolveHistory>> historyList = new ArrayList<List<SolveHistory>>(3);
 
         private Adapter(ViewPager viewPager) {
             Log.w(NAME, "entering constructor Adapter(" + viewPager + ")");
@@ -84,12 +83,13 @@ public class HistoryActivity extends AppCompatActivity {
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int difficultyPage) {
+        public Object instantiateItem(ViewGroup container, int difficulty) {
             View view = layoutInflater.inflate(R.layout.gamehistory, container, false);
             container.addView(view);
 
             if (view instanceof HistoryLayout) {
                 historyLayout = (HistoryLayout) view;
+                historyLayout.setHistory(historyList.get(difficulty));
                 historyLayout.setAdapter(this);
             } else {
                 Log.w(NAME, "instantiateItem: view can be something other than HistoryLayout: " + view);
@@ -104,6 +104,8 @@ public class HistoryActivity extends AppCompatActivity {
         }
     }   // end class Adapter
 
+    private Adapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,12 +115,14 @@ public class HistoryActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences(PuzzleActivity.NAME, MODE_PRIVATE);
 
-        retrieveGameHistory(sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY1, "[]"),
-                            sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY2, "[]"),
-                            sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY3, "[]"));
-
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setAdapter(new Adapter(viewPager));
+        adapter = new Adapter(viewPager);
+
+        retrieveGameHistory(sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY1, "[]"),
+                sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY2, "[]"),
+                sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY3, "[]"));
+
+        viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             private int previousPage = PuzzleActivity.DIFFICULTY1;
 
@@ -144,24 +148,26 @@ public class HistoryActivity extends AppCompatActivity {
         Type historyType = new TypeToken<List<SolveHistory>>() {}.getType();
 
         if (easyJson == null || easyJson.equals("[]")) {
-            historyList.add(new ArrayList<SolveHistory>());
+            adapter.historyList.add(new ArrayList<SolveHistory>());
         } else {
-            historyList.add((ArrayList<SolveHistory>) historyGson.fromJson(easyJson, historyType));
+            adapter.historyList.add((ArrayList<SolveHistory>) historyGson.fromJson(easyJson, historyType));
         }
 
         if (mediumJson == null || mediumJson.equals("[]")) {
-            historyList.add(new ArrayList<SolveHistory>());
+            adapter.historyList.add(new ArrayList<SolveHistory>());
         } else {
-            historyList.add((ArrayList<SolveHistory>) historyGson.fromJson(mediumJson, historyType));
+            adapter.historyList.add((ArrayList<SolveHistory>) historyGson.fromJson(mediumJson, historyType));
         }
 
         if (hardJson == null || hardJson.equals("[]")) {
-            historyList.add(new ArrayList<SolveHistory>());
+            adapter.historyList.add(new ArrayList<SolveHistory>());
         } else {
-            historyList.add((ArrayList<SolveHistory>) historyGson.fromJson(hardJson, historyType));
+            adapter.historyList.add((ArrayList<SolveHistory>) historyGson.fromJson(hardJson, historyType));
         }
 
-        Log.w(NAME, "retrieveGameHistory:\nEasy = " + historyList.get(DIFFICULTY_EASY) + "\nMedium = " + historyList.get(DIFFICULTY_MEDIUM) + "\nHard = " + historyList.get(DIFFICULTY_HARD));
+        Log.w(NAME,     "retrieveGameHistory:\nEasy = " + adapter.historyList.get(DIFFICULTY_EASY)
+                    +   "\nMedium = " + adapter.historyList.get(DIFFICULTY_MEDIUM)
+                    +   "\nHard = " + adapter.historyList.get(DIFFICULTY_HARD));
     }
 
 }
