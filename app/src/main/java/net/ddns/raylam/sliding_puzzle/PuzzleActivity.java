@@ -10,6 +10,7 @@
 package net.ddns.raylam.sliding_puzzle;
 
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -29,7 +30,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import net.ddns.raylam.sliding_puzzle.data.GameScore;
+import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 import net.ddns.raylam.sliding_puzzle.data.Tile;
 
 import java.lang.ref.WeakReference;
@@ -41,9 +42,6 @@ import java.util.Random;
 import net.ddns.raylam.sliding_puzzle.ui.AboutDialog;
 import net.ddns.raylam.sliding_puzzle.ui.DifficultyDialog;
 import net.ddns.raylam.sliding_puzzle.ui.HelpDialog;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class PuzzleActivity extends AppCompatActivity {
     // Name of this Activity; used for logging/debugging purposes
@@ -60,7 +58,9 @@ public class PuzzleActivity extends AppCompatActivity {
     // Bundle difficulty name when passing to DifficultyDialog also used for SharedPreferences
     public static final String NAME_DIFFICULTY = "difficulty";
 
-    public static final String NAME_GAME_SCORES = "gameScores";
+    public static final String NAME_GAME_HISTORY1 = "gameEasyHistory";
+    public static final String NAME_GAME_HISTORY2 = "gameMediumHistory";
+    public static final String NAME_GAME_HISTORY3 = "gameHardHistory";
 
     // The random number generator used to mix up the puzzle
     private static final Random RANDOM_GENERATOR = new Random(System.currentTimeMillis());
@@ -76,7 +76,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
     private int moves = 0;				// Number of moves taken so far
     private TimerTask timer;
-    private int solveTime = -1;			// Time taken to solve the puzzle (in seconds)
+    private int solveTime = 0;			// Time taken to solve the puzzle (in seconds)
     private TextView movesView;
     private TextView timeView;
 
@@ -100,6 +100,7 @@ public class PuzzleActivity extends AppCompatActivity {
     private static final int MENU_ABOUT = 3;
 
     // Game difficulty levels
+    public static final int DIFFICULTY_LEVELS = 3;  // number of difficulty levels
     public static final int DIFFICULTY1 = 1;       // Easy
     public static final int DIFFICULTY2 = 2;       // Medium
     public static final int DIFFICULTY3 = 3;       // Hard
@@ -107,7 +108,9 @@ public class PuzzleActivity extends AppCompatActivity {
     // Current game difficulty level
     private int difficulty = DIFFICULTY1;
 
-    private List<GameScore> gameScores = new ArrayList<>();
+    private List<SolveHistory> easyHistory = new ArrayList<>();
+    private List<SolveHistory> mediumHistory = new ArrayList<>();
+    private List<SolveHistory> hardHistory = new ArrayList<>();
 
     /*
      * This OnClickListener handles the actions associated with tapping on a tile (switching it with the empty tile,
@@ -159,7 +162,7 @@ public class PuzzleActivity extends AppCompatActivity {
                 }
             }
         }
-    };
+    };  // end instantiate tileOnClickListener
 
     /*
      * TimerTask updates the elapsed time clock.
@@ -194,7 +197,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
             return elapsedTime;
         }
-    }
+    }   // end class TimerTask
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,7 +218,10 @@ public class PuzzleActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(NAME, MODE_PRIVATE);
 		difficulty = sharedPreferences.getInt(NAME_DIFFICULTY, DIFFICULTY1);
 
-        retrieveGameScores(sharedPreferences.getString(NAME_GAME_SCORES, "[]"));
+        retrieveGameHistory(
+                    sharedPreferences.getString(NAME_GAME_HISTORY1, "[]"),
+                    sharedPreferences.getString(NAME_GAME_HISTORY2, "[]"),
+                    sharedPreferences.getString(NAME_GAME_HISTORY3, "[]"));
 
         if (savedInstanceState == null) {
 			initialize();
@@ -327,13 +333,27 @@ public class PuzzleActivity extends AppCompatActivity {
         return false;
     }
 
-    private void retrieveGameScores(String jsonString) {
-        if (jsonString.equals("[]"))
-            return;
+    private void retrieveGameHistory(final String easyJson, final String mediumJson, final String hardJson) {
+        Gson historyGson = new Gson();
+        Type historyType = new TypeToken<List<SolveHistory>>() {}.getType();
 
-        Gson gameScoresGson = new Gson();
-        Type gameScoreType = new TypeToken<List<GameScore>>() {}.getType();
-        gameScores = gameScoresGson.fromJson(jsonString, gameScoreType);
+        if (easyJson == null || easyJson.equals("[]")) {
+            easyHistory = new ArrayList<>();
+        } else {
+            easyHistory = historyGson.fromJson(easyJson, historyType);
+        }
+
+        if (mediumJson == null || mediumJson.equals("[]")) {
+            mediumHistory = new ArrayList<>();
+        } else {
+            mediumHistory = historyGson.fromJson(mediumJson, historyType);
+        }
+
+        if (hardJson == null || hardJson.equals("[]")) {
+            hardHistory = new ArrayList<>();
+        } else {
+            hardHistory = historyGson.fromJson(hardJson, historyType);
+        }
     }
 
     /*
@@ -534,7 +554,7 @@ public class PuzzleActivity extends AppCompatActivity {
         return tilesToString;
     }
 
-    private String intToHHMMSS(int time) {
+    public static String intToHHMMSS(int time) {
         if (time <= 0)
             return "00:00:00";
 
@@ -546,27 +566,22 @@ public class PuzzleActivity extends AppCompatActivity {
         int totalHours = totalMinutes / 60;
         int hour = totalHours % 24;
 
-        return (hour <= 9 ? "0" : "") + hour + ":" + (minute <= 9 ? "0" : "") + minute + ":" + (second <= 9 ? "0" : "") + second;
+        return String.format("%02d:%02d:%02d", hour, minute, second);
     }
 
     private void puzzleSolved() {
 		// timer can be null if the user solves the puzzle and continues to move the tiles around to solve it again
 		// before the timer can be cancelled the first time around.
 		if (timer != null) {
+            solveTime = timer.elapsedTime;
 			timer.cancel(true);
-			Toast.makeText(getBaseContext(), "Puzzle Sovled!", Toast.LENGTH_LONG).show();
-			solveTime = timer.elapsedTime;
 			timer = null;
 			timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
 
-            // Save the GameScore history
-            Gson gameScoreGson = new Gson();
-            Type gameScoreType = new TypeToken<List<GameScore>>() {}.getType();
-            gameScores.add(new GameScore(new Date(), solveTime, moves, difficulty));
-            getSharedPreferences(NAME, MODE_PRIVATE)
-                    .edit()
-                    .putString(NAME_GAME_SCORES, gameScoreGson.toJson(gameScores, gameScoreType))
-                    .apply();
+            // Save the game play history
+            onHistoryChanged(difficulty, new SolveHistory(new Date(), solveTime, moves, difficulty));
+
+            startActivity(new Intent(PuzzleActivity.this, SolvedActivity.class));
         }
 	}
 
@@ -576,5 +591,40 @@ public class PuzzleActivity extends AppCompatActivity {
 			.edit()
 			.putInt(NAME_DIFFICULTY, difficulty)
 			.apply();
+    }
+
+    public void onHistoryChanged(int difficulty, SolveHistory solveHistory) {
+        Gson historyGson = new Gson();
+        Type historyType = new TypeToken<List<SolveHistory>>() {}.getType();
+
+        if (difficulty == DIFFICULTY1) {
+            easyHistory.add(solveHistory);
+            getSharedPreferences(NAME, MODE_PRIVATE)
+                    .edit()
+                    .putString(NAME_GAME_HISTORY1, historyGson.toJson(easyHistory, historyType))
+                    .apply();
+        } else if (difficulty == DIFFICULTY2) {
+            mediumHistory.add(solveHistory);
+            getSharedPreferences(NAME, MODE_PRIVATE)
+                    .edit()
+                    .putString(NAME_GAME_HISTORY2, historyGson.toJson(mediumHistory, historyType))
+                    .apply();
+        } else if (difficulty == DIFFICULTY3) {
+            hardHistory.add(solveHistory);
+            getSharedPreferences(NAME, MODE_PRIVATE)
+                    .edit()
+                    .putString(NAME_GAME_HISTORY3, historyGson.toJson(hardHistory, historyType))
+                    .apply();
+        }
+    }
+
+    public List<SolveHistory> getHistory(int difficulty) {
+        if (difficulty == DIFFICULTY1) {
+            return easyHistory;
+        } else if (difficulty == DIFFICULTY2) {
+            return mediumHistory;
+        } else {
+            return hardHistory;
+        }
     }
 }

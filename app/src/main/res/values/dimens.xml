@@ -2,11 +2,10 @@
 <resources>
     <dimen name="attributionSize">10sp</dimen>
     <dimen name="tileMargin">1dp</dimen>
-    <dimen name="titleMargin">20dp</dimen>
+    <dimen name="titleMargin">10dp</dimen>
     <dimen name="titlePadding">10dp</dimen>
     <dimen name="instructionSize">16sp</dimen>
-    <dimen name="titleSize">32sp</dimen>
-    <dimen name="tileSize">36sp</dimen>
+    <dimen name="titleSize">24sp</dimen>
     <dimen name="instructionMargin">20dp</dimen>
     <dimen name="borderPadding">4dp</dimen>
 </resources>
