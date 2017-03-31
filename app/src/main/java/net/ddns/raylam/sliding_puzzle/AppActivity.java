@@ -10,12 +10,16 @@
 package net.ddns.raylam.sliding_puzzle;
 
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import java.io.IOException;
 
 public class AppActivity extends AppCompatActivity {
     public static final String NAME = AppActivity.class.getSimpleName();
@@ -32,22 +36,23 @@ public class AppActivity extends AppCompatActivity {
             }
         });
 
-        final MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.tada);
-        mediaPlayer.start();
-        mediaPlayer.reset();
-        mediaPlayer.release();
+        // If the user presses the hard volumne up/down buttons, affect the Multimedia stream, not the ringer.
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        final MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.alarm08);
 
-        new Handler().postDelayed(new Runnable() {
+        mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
             @Override
-            public void run() {
-                if (isFinishing() || isDestroyed())
-                    return;
+            public void onCompletion(final MediaPlayer mp) {
+                Log.w(NAME, "about to reset mediaPlayer");
+                mediaPlayer.reset();
 
                 startActivity(new Intent(AppActivity.this, PuzzleActivity.class));
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
             }
-        }, 1500);
-    }   // end onCreate
+        });
 
+		Log.w(NAME, "about to start mediaPlayer");
+		mediaPlayer.start();
+    }   // end onCreate
 }
