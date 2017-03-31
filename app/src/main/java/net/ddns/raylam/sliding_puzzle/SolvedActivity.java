@@ -13,29 +13,34 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+
+import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 
 public class SolvedActivity extends AppCompatActivity {
     public static final String NAME = SolvedActivity.class.getSimpleName();
+    public static final String NAME_POSITION = "position";
+
+    MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.solvedactivity);
 
-
         // If the user presses the hard volumne up/down buttons, affect the Multimedia stream, not the ringer.
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        final MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.yay);
+        mediaPlayer = MediaPlayer.create(this, R.raw.yay);
 
         mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
             @Override
             public void onCompletion(final MediaPlayer mp) {
-                Log.w(NAME, "about to reset mediaPlayer");
-                mediaPlayer.reset();
+                doneWithMediaPlayer();
 
                 startActivity(new Intent(SolvedActivity.this, HistoryActivity.class));
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -43,8 +48,32 @@ public class SolvedActivity extends AppCompatActivity {
             }
         });
 
-        Log.w(NAME, "about to start mediaPlayer");
+        if (savedInstanceState != null)
+            mediaPlayer.seekTo(savedInstanceState.getInt(NAME_POSITION));
+
         mediaPlayer.start();
     }   // end onCreate
 
+    @Override
+    protected void onDestroy() {
+        if (mediaPlayer != null)
+            doneWithMediaPlayer();
+
+        super.onDestroy();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mediaPlayer != null)
+            outState.putInt(NAME_POSITION, mediaPlayer.getCurrentPosition());
+
+        super.onSaveInstanceState(outState);
+    }
+
+    private void doneWithMediaPlayer() {
+        mediaPlayer.stop();
+        mediaPlayer.reset();
+        mediaPlayer.release();
+        mediaPlayer = null;
+    }
 }
