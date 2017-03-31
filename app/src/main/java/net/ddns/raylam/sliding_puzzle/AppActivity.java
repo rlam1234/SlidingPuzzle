@@ -10,6 +10,7 @@
 package net.ddns.raylam.sliding_puzzle;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -31,9 +32,17 @@ public class AppActivity extends AppCompatActivity {
             }
         });
 
+        final MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.tada);
+        mediaPlayer.start();
+        mediaPlayer.reset();
+        mediaPlayer.release();
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (isFinishing() || isDestroyed())
+                    return;
+
                 startActivity(new Intent(AppActivity.this, PuzzleActivity.class));
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
