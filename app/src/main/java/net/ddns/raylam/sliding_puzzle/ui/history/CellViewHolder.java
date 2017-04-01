@@ -9,6 +9,7 @@
  */
 package net.ddns.raylam.sliding_puzzle.ui.history;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -51,6 +52,6 @@ class CellViewHolder extends RecyclerView.ViewHolder {
         // Set the date to the first 20 characters to make sure we don't overflow the field
         date.setText(dateTime.substring(0, dateTime.length() < 20 ? dateTime.length() : 20));
         elapsedTime.setText(PuzzleActivity.intToHHMMSS(solveHistory.elapsedTime));
-        moves.setText(Integer.toString(solveHistory.moves));
+        moves.setText(NumberFormat.getInstance().format(solveHistory.moves));
     }
 }
