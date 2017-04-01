@@ -9,7 +9,9 @@
  */
 package net.ddns.raylam.sliding_puzzle.ui;
 
+import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.util.Log;
@@ -21,9 +23,11 @@ import android.widget.RadioGroup;
 import net.ddns.raylam.sliding_puzzle.PuzzleActivity;
 import net.ddns.raylam.sliding_puzzle.R;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class DifficultyDialog extends DialogFragment {
     public static String NAME = DifficultyDialog.class.getSimpleName();
-    private PuzzleActivity activity;
+    private SharedPreferences sharedPreferences;
     private RadioButton difficulty1Button;
     private RadioButton difficulty2Button;
     private RadioButton difficulty3Button;
@@ -34,21 +38,17 @@ public class DifficultyDialog extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Bundle bundle = getArguments();
-        if (bundle != null)
-            difficulty = bundle.getInt(PuzzleActivity.NAME_DIFFICULTY);
-
-        Log.w(NAME, "onCreateView: bundle = " + bundle + ", difficulty = " + difficulty);
-
         View view = inflater.inflate(R.layout.difficultyfragment, container);
 
         // Find the activity and radio buttons for later use
-        activity = (PuzzleActivity) getActivity();
         difficulty1Button = (RadioButton) view.findViewById(R.id.difficulty1Button);
         difficulty2Button = (RadioButton) view.findViewById(R.id.difficulty2Button);
         difficulty3Button = (RadioButton) view.findViewById(R.id.difficulty3Button);
 
         getDialog().setTitle(R.string.difficultyItem);
+
+        sharedPreferences = getActivity().getSharedPreferences(PuzzleActivity.NAME, MODE_PRIVATE);
+        difficulty = sharedPreferences.getInt(PuzzleActivity.NAME_DIFFICULTY, PuzzleActivity.DIFFICULTY1);
 
         // Check the current difficulty level so the user knows what it is
         if (difficulty == PuzzleActivity.DIFFICULTY1)
@@ -62,18 +62,22 @@ public class DifficultyDialog extends DialogFragment {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 if (difficulty1Button.isChecked())
-                    activity.onDifficultySelected(PuzzleActivity.DIFFICULTY1);
+                    saveDifficulty(PuzzleActivity.DIFFICULTY1);
 
                 if (difficulty2Button.isChecked())
-                    activity.onDifficultySelected(PuzzleActivity.DIFFICULTY2);
+                    saveDifficulty(PuzzleActivity.DIFFICULTY2);
 
                 if (difficulty3Button.isChecked())
-                    activity.onDifficultySelected(PuzzleActivity.DIFFICULTY3);
+                    saveDifficulty(PuzzleActivity.DIFFICULTY3);
 
 //                dismiss();
             }
         });
 
         return view;
+    }
+
+    private void saveDifficulty(int difficulty) {
+        sharedPreferences.edit().putInt(PuzzleActivity.NAME_DIFFICULTY, difficulty).apply();
     }
 }

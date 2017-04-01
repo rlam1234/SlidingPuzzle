@@ -21,6 +21,8 @@
     <string name="difficultyText1">Easy</string>
     <string name="difficultyText2">Medium</string>
     <string name="difficultyText3">Hard</string>
+    <string name="settingsItem">Difficulty</string>
+    <string name="settingsText">Settings</string>
     <string name="helpItem">Help</string>
     <string name="helpText">Slide the tiles around until they appear in proper order with the empty tile placed in the bottom right. \n\nTap a tile to slide it into the empty square; only tiles adjacent to the empty square may slide into it.</string>
     <string name="aboutItem">About</string>

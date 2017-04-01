@@ -9,6 +9,7 @@
  */
 package net.ddns.raylam.sliding_puzzle;
 
+import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -16,6 +17,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -24,6 +27,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
+import net.ddns.raylam.sliding_puzzle.ui.AboutDialog;
+import net.ddns.raylam.sliding_puzzle.ui.DifficultyDialog;
+import net.ddns.raylam.sliding_puzzle.ui.HelpDialog;
 import net.ddns.raylam.sliding_puzzle.ui.history.HistoryLayout;
 
 import java.lang.reflect.Type;
@@ -38,6 +44,9 @@ public class HistoryActivity extends AppCompatActivity {
     private static final int DIFFICULTY_EASY = 0;
     private static final int DIFFICULTY_MEDIUM = 1;
     private static final int DIFFICULTY_HARD = 2;
+
+    private int difficulty;
+    private ActionBarOverflow actionBarOverflow;
 
     public static final class Adapter extends PagerAdapter {
         private static final String NAME = Adapter.class.getSimpleName();
@@ -100,8 +109,9 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.historyactivity);
+        actionBarOverflow = new ActionBarOverflow(this);
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         adapter = new Adapter(viewPager);
 
         SharedPreferences sharedPreferences = getSharedPreferences(PuzzleActivity.NAME, MODE_PRIVATE);
@@ -109,8 +119,24 @@ public class HistoryActivity extends AppCompatActivity {
                 sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY2, "[]"),
                 sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY3, "[]"));
 
+        difficulty = sharedPreferences.getInt(PuzzleActivity.NAME_DIFFICULTY, DIFFICULTY_EASY);
+
         viewPager.setAdapter(adapter);
     }   // end onCreate
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        actionBarOverflow.createMenuItems(menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        return actionBarOverflow.optionsItemSelected(item);
+    }
 
     private void retrieveGameHistory(final String easyJson, final String mediumJson, final String hardJson) {
         Gson historyGson = new Gson();
@@ -134,5 +160,4 @@ public class HistoryActivity extends AppCompatActivity {
             adapter.historyList.add((ArrayList<SolveHistory>) historyGson.fromJson(hardJson, historyType));
         }
     }
-
 }

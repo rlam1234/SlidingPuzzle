@@ -9,7 +9,6 @@
  */
 package net.ddns.raylam.sliding_puzzle;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -39,9 +38,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import net.ddns.raylam.sliding_puzzle.ui.AboutDialog;
-import net.ddns.raylam.sliding_puzzle.ui.DifficultyDialog;
-import net.ddns.raylam.sliding_puzzle.ui.HelpDialog;
 
 public class PuzzleActivity extends AppCompatActivity {
     // Name of this Activity; used for logging/debugging purposes
@@ -94,13 +90,9 @@ public class PuzzleActivity extends AppCompatActivity {
     // Stores the images of the various puzzle pieces; puzzlePieces[i] holds the image of the puzzle piece with id i.
     private Drawable[] puzzlePieces = new Drawable[MAX_ROWS * MAX_COLS];
 
-    // Menu items
-    private static final int MENU_DIFFICULTY = 1;
-    private static final int MENU_HELP = 2;
-    private static final int MENU_ABOUT = 3;
+    private ActionBarOverflow actionBarOverflow;
 
     // Game difficulty levels
-    public static final int DIFFICULTY_LEVELS = 3;  // number of difficulty levels
     public static final int DIFFICULTY1 = 1;       // Easy
     public static final int DIFFICULTY2 = 2;       // Medium
     public static final int DIFFICULTY3 = 3;       // Hard
@@ -203,6 +195,7 @@ public class PuzzleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.puzzleactivity);
+        actionBarOverflow = new ActionBarOverflow(this);
 
 		findViewById(R.id.newPuzzle).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -290,47 +283,14 @@ public class PuzzleActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(final Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        MenuItem mDifficulty = menu.add(0, MENU_DIFFICULTY, MENU_DIFFICULTY, R.string.difficultyItem);
-        mDifficulty.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-
-        MenuItem mHelp = menu.add(0, MENU_HELP, MENU_HELP, R.string.helpItem);
-        mHelp.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-
-        MenuItem mAbout = menu.add(0, MENU_ABOUT, MENU_ABOUT, R.string.aboutItem);
-        mAbout.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+        actionBarOverflow.createMenuItems(menu);
 
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case MENU_DIFFICULTY:
-                DifficultyDialog difficultyDialog = new DifficultyDialog();
-                Bundle bundle = new Bundle();
-                bundle.putInt(NAME_DIFFICULTY, difficulty);
-                difficultyDialog.setArguments(bundle);
-
-                getFragmentManager().beginTransaction()
-						.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .add(difficultyDialog, DifficultyDialog.NAME)
-                        .commit();
-                return true;
-            case MENU_HELP:
-                getFragmentManager().beginTransaction()
-						.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .add(new HelpDialog(), HelpDialog.NAME)
-                        .commit();
-                return true;
-            case MENU_ABOUT:
-                getFragmentManager().beginTransaction()
-						.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .add(new AboutDialog(), AboutDialog.NAME)
-                        .commit();
-                return true;
-        }
-
-        return false;
+        return actionBarOverflow.optionsItemSelected(item);
     }
 
     private void retrieveGameHistory(final String easyJson, final String mediumJson, final String hardJson) {
@@ -424,8 +384,7 @@ public class PuzzleActivity extends AppCompatActivity {
         }   // end while
 
         setTileBackground();
-//
-//        timer = new TimerTask(this);
+
         timer.execute();
     }   // end randomizeTiles
 
@@ -545,7 +504,6 @@ public class PuzzleActivity extends AppCompatActivity {
 
         for (int row = 0; row < MAX_ROWS; row++) {
             for (int column = 0; column < MAX_COLS; column++) {
-//                tilesToString += "(" + tiles[row][column].id + ", " + tiles[row][column].imageView.getDrawable() + ") ";
 				tilesToString += "(" + tiles[row][column].id + ") ";
             }
             tilesToString += "\n";
@@ -585,14 +543,6 @@ public class PuzzleActivity extends AppCompatActivity {
         }
 	}
 
-	public void onDifficultySelected(int difficulty) {
-        this.difficulty = difficulty;
-		getSharedPreferences(NAME, MODE_PRIVATE)
-			.edit()
-			.putInt(NAME_DIFFICULTY, difficulty)
-			.apply();
-    }
-
     public void onHistoryChanged(int difficulty, SolveHistory solveHistory) {
         Gson historyGson = new Gson();
         Type historyType = new TypeToken<List<SolveHistory>>() {}.getType();
@@ -615,16 +565,6 @@ public class PuzzleActivity extends AppCompatActivity {
                     .edit()
                     .putString(NAME_GAME_HISTORY3, historyGson.toJson(hardHistory, historyType))
                     .apply();
-        }
-    }
-
-    public List<SolveHistory> getHistory(int difficulty) {
-        if (difficulty == DIFFICULTY1) {
-            return easyHistory;
-        } else if (difficulty == DIFFICULTY2) {
-            return mediumHistory;
-        } else {
-            return hardHistory;
         }
     }
 }
