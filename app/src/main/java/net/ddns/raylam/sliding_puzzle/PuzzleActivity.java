@@ -334,17 +334,14 @@ public class PuzzleActivity extends AppCompatActivity {
 
         initialize();
 
+        difficulty = getSharedPreferences(NAME, MODE_PRIVATE).getInt(NAME_DIFFICULTY, DIFFICULTY1);
         int maximumMoves;      // the number of times to move the empty tile before we consider the puzzle to be randomized
-        switch(difficulty) {
-            case DIFFICULTY3:
-                maximumMoves = MAXIMUM_MOVES3;
-                break;
-            case DIFFICULTY2:
-                maximumMoves = MAXIMUM_MOVES2;
-                break;
-            default: case DIFFICULTY1:
-                maximumMoves = MAXIMUM_MOVES1;
-        }
+        if (difficulty == DIFFICULTY1)
+            maximumMoves = MAXIMUM_MOVES1;
+        else if (difficulty == DIFFICULTY2)
+            maximumMoves = MAXIMUM_MOVES2;
+        else
+            maximumMoves = MAXIMUM_MOVES3;
 
         while (counter < maximumMoves) {
             // Pick a random direction to move the empty tile;

@@ -111,6 +111,10 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(R.layout.historyactivity);
         actionBarOverflow = new ActionBarOverflow(this);
 
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getString(R.string.solveHistoryTitle));
+
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         adapter = new Adapter(viewPager);
 
@@ -135,7 +139,12 @@ public class HistoryActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        return actionBarOverflow.optionsItemSelected(item);
+        if (actionBarOverflow.optionsItemSelected(item))
+            return true;
+        else {
+            finish();
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     private void retrieveGameHistory(final String easyJson, final String mediumJson, final String hardJson) {
