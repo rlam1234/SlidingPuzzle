@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:background="@color/white"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 	<RelativeLayout
 		android:layout_gravity="center"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="wrap_content">
 
 		<LinearLayout
 			android:id="@+id/row0"
@@ -18,6 +19,7 @@
 			<ImageView
 				android:id="@+id/tile00"
 				android:src="@drawable/android00"
+				android:contentDescription="@string/android00Text"
 				android:adjustViewBounds="true"
 				android:background="@drawable/customborder"
 				android:scaleType="fitCenter"
@@ -28,6 +30,7 @@
 			<ImageView
 				android:id="@+id/tile01"
 				android:src="@drawable/android01"
+				android:contentDescription="@string/android01Text"
 				android:adjustViewBounds="true"
 				android:background="@drawable/customborder"
 				android:scaleType="fitCenter"
@@ -38,6 +41,7 @@
 			<ImageView
 				android:id="@+id/tile02"
 				android:src="@drawable/android02"
+				android:contentDescription="@string/android02Text"
 				android:adjustViewBounds="true"
 				android:background="@drawable/customborder"
 				android:scaleType="fitCenter"
@@ -57,6 +61,7 @@
 			<ImageView
 				android:id="@+id/tile10"
 				android:src="@drawable/android10"
+				android:contentDescription="@string/android10Text"
 				android:adjustViewBounds="true"
 				android:background="@drawable/customborder"
 				android:scaleType="fitCenter"
@@ -67,6 +72,7 @@
 			<ImageView
 				android:id="@+id/tile11"
 				android:src="@drawable/android11"
+				android:contentDescription="@string/android11Text"
 				android:adjustViewBounds="true"
 				android:background="@drawable/customborder"
 				android:scaleType="fitCenter"
@@ -77,6 +83,7 @@
 			<ImageView
 				android:id="@+id/tile12"
 				android:src="@drawable/android12"
+				android:contentDescription="@string/android12Text"
 				android:adjustViewBounds="true"
 				android:background="@drawable/customborder"
 				android:scaleType="fitCenter"
@@ -96,6 +103,7 @@
 			<ImageView
 				android:id="@+id/tile20"
 				android:src="@drawable/android20"
+				android:contentDescription="@string/android20Text"
 				android:adjustViewBounds="true"
 				android:background="@drawable/customborder"
 				android:scaleType="fitCenter"
@@ -106,6 +114,7 @@
 			<ImageView
 				android:id="@+id/tile21"
 				android:src="@drawable/android21"
+				android:contentDescription="@string/android21Text"
 				android:adjustViewBounds="true"
 				android:background="@drawable/customborder"
 				android:scaleType="fitCenter"
@@ -116,6 +125,7 @@
 			<ImageView
 				android:id="@+id/tile22"
 				android:src="@drawable/android22"
+				android:contentDescription="@string/android22Text"
 				android:adjustViewBounds="true"
 				android:background="@drawable/customborder"
 				android:scaleType="fitCenter"
@@ -127,14 +137,13 @@
 
 		<Button
 			android:id="@+id/newPuzzle"
-			android:text="New Puzzle"
+			android:text="@string/newPuzzleText"
 			android:layout_below="@id/row2"
 			android:layout_centerHorizontal="true"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content" />
 		<TextView
 			android:id="@+id/elapsedTime"
-			android:text="Time: 00:00:00"
 			android:layout_marginLeft="@dimen/tileMargin"
 			android:layout_below="@id/row2"
 			android:layout_alignParentLeft="true"
@@ -144,7 +153,6 @@
 			android:layout_height="wrap_content" />
 		<TextView
 			android:id="@+id/moves"
-			android:text="Moves: 000"
 			android:layout_marginRight="@dimen/tileMargin"
 			android:layout_below="@id/row2"
 			android:layout_alignParentRight="true"

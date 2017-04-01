@@ -14,13 +14,9 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import java.io.IOException;
 
 public class AppActivity extends AppCompatActivity {
     public static final String NAME = AppActivity.class.getSimpleName();
@@ -42,7 +38,7 @@ public class AppActivity extends AppCompatActivity {
 
         // If the user presses the hard volumne up/down buttons, affect the Multimedia stream, not the ringer.
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        mediaPlayer = MediaPlayer.create(this, R.raw.tada);
+        mediaPlayer = MediaPlayer.create(this, R.raw.intro);
 
         mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
             @Override

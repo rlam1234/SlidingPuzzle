@@ -64,10 +64,15 @@ public class HistoryLayout extends LinearLayout {
 
     public void setHistory(@NonNull List<SolveHistory> history) {
         historyAdapter.history = history;
-		if (history.size() != 0) {
-			((TextView) findViewById(R.id.nothingText)).setVisibility(GONE);
-            ((LinearLayout) findViewById(R.id.titleLayout)).setVisibility(VISIBLE);
-		}
+
+        // If there is no puzzle solve history for this difficulty level, show text saying so.
+		if (history.size() == 0) {
+			findViewById(R.id.nothingText).setVisibility(VISIBLE);
+            findViewById(R.id.titleLayout).setVisibility(GONE);
+		} else {
+            findViewById(R.id.nothingText).setVisibility(GONE);
+            findViewById(R.id.titleLayout).setVisibility(VISIBLE);
+        }
     }
 
     public void updateHistory(SolveHistory solveHistory, int position) {

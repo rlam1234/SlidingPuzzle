@@ -21,7 +21,7 @@ import net.ddns.raylam.sliding_puzzle.PuzzleActivity;
 import net.ddns.raylam.sliding_puzzle.R;
 import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 
-public class CellViewHolder extends RecyclerView.ViewHolder {
+class CellViewHolder extends RecyclerView.ViewHolder {
     private static final String NAME = CellViewHolder.class.getSimpleName();
 
     private TextView date;
@@ -31,18 +31,19 @@ public class CellViewHolder extends RecyclerView.ViewHolder {
     private final Format DATE_FORMAT;
     private final Format TIME_FORMAT;
 
-    public CellViewHolder(View itemView) {
+    CellViewHolder(View itemView) {
         super(itemView);
 
         date = (TextView) itemView.findViewById(R.id.dateCell);
         elapsedTime = (TextView) itemView.findViewById(R.id.elapsedTimeCell);
         moves = (TextView) itemView.findViewById(R.id.movesCell);
 
+        // Setup the date/time formatters to use the system date/time format
         DATE_FORMAT = android.text.format.DateFormat.getDateFormat(itemView.getContext());
         TIME_FORMAT = android.text.format.DateFormat.getTimeFormat(itemView.getContext());
     }
 
-    public void update(SolveHistory solveHistory, int position) {
+    void update(SolveHistory solveHistory, int position) {
         String dateTime = ((SimpleDateFormat) DATE_FORMAT).format(solveHistory.date)
                 +   " "
                 +   ((SimpleDateFormat) TIME_FORMAT).format(solveHistory.date);
@@ -50,6 +51,6 @@ public class CellViewHolder extends RecyclerView.ViewHolder {
         // Set the date to the first 20 characters to make sure we don't overflow the field
         date.setText(dateTime.substring(0, dateTime.length() < 20 ? dateTime.length() : 20));
         elapsedTime.setText(PuzzleActivity.intToHHMMSS(solveHistory.elapsedTime));
-        moves.setText("" + solveHistory.moves);
+        moves.setText(Integer.toString(solveHistory.moves));
     }
 }

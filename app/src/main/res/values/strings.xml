@@ -1,15 +1,16 @@
 <resources>
     <string name="app_name">Sliding Tile Puzzle</string>
     <string name="attributionText">The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License.</string>
-    <string name="_1">1</string>
-    <string name="_2">2</string>
-    <string name="_3">3</string>
-    <string name="_4">4</string>
-    <string name="_5">5</string>
-    <string name="_6">6</string>
-    <string name="_7">7</string>
-    <string name="_8">8</string>
     <string name="emptyTile">" "</string>
+    <string name="android00Text">Top left tile</string>
+    <string name="android01Text">Top middle tile</string>
+    <string name="android02Text">Top right tile</string>
+    <string name="android10Text">Left tile</string>
+    <string name="android11Text">Middle tile</string>
+    <string name="android12Text">Right tile</string>
+    <string name="android20Text">Bottom left tile</string>
+    <string name="android21Text">Bottom middle tile</string>
+    <string name="android22Text">Empty tile</string>
     <string name="errorCannotMove">That tile cannot be moved yet</string>
     <string name="errorCannotMoveEmpty">There is no tile there</string>
     <string name="attributionUrl">https://developer.android.com/distribute/marketing-tools/brand-guidelines.html</string>
@@ -30,6 +31,10 @@
     <string name="play_history_hard">Hard Difficulty</string>
     <string name="solveHistoryTitle">Puzzle Solve History</string>
     <string name="dateTitle">Date/Time</string>
-    <string name="elapsedTimeTitle">Time</string>
+    <string name="elapsedTimeTitle">Solve Time</string>
     <string name="movesTitle">Moves</string>
+    <string name="newPuzzleText">New Puzzle</string>
+    <string name="puzzle_hasn_t_been_solved_yet">Puzzle hasn\'t been solved yet</string>
+    <string name="splash_page">Splash page</string>
+    <string name="congratulations_you_did_it">Congratulations! You did it!</string>
 </resources>

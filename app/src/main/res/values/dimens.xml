@@ -8,4 +8,7 @@
     <dimen name="titleSize">24sp</dimen>
     <dimen name="instructionMargin">20dp</dimen>
     <dimen name="borderPadding">4dp</dimen>
+    <dimen name="dateCellWidth">120dp</dimen>
+    <dimen name="elapsedTimeCellWidth">40dp</dimen>
+    <dimen name="movesCellWidth">40dp</dimen>
 </resources>

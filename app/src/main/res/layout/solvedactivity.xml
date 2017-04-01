@@ -2,15 +2,17 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/congratsView"
         android:layout_weight="1"
+        android:contentDescription="@string/congratulations_you_did_it"
         android:visibility="visible"
         android:src="@drawable/congrats_page"
         android:scaleType="fitCenter"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="0dp" />
 </LinearLayout>
