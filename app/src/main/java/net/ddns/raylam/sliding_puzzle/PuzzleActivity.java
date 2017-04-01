@@ -65,6 +65,14 @@ public class PuzzleActivity extends AppCompatActivity implements AdapterView.OnI
     // Used for the Navigation Drawer
     DrawerLayout drawerLayout = null;
     ActionBarDrawerToggle toggle = null;
+    ListView drawer = null;
+
+    // Navigation Drawer items
+    public static final int NAV_PUZZLE = 0;
+    public static final int NAV_HISTORY = 1;
+    public static final int NAV_SETTINGS = 2;
+    public static final int NAV_HELP = 3;
+    public static final int NAV_ABOUT = 4;
 
     // Bundle difficulty name when passing to DifficultyDialog also used for SharedPreferences
     public static final String NAME_DIFFICULTY = "difficulty";
@@ -316,6 +324,7 @@ public class PuzzleActivity extends AppCompatActivity implements AdapterView.OnI
 //        return true;
 //    }
 
+    // Following overrides are for setting up the Navigation Drawer
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         // If the ActionBarDrawerToggle has already handled this, return
@@ -353,7 +362,6 @@ public class PuzzleActivity extends AppCompatActivity implements AdapterView.OnI
         return false;
     }
 
-    // Following overrides are for setting up the Navigation Drawer
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -372,11 +380,21 @@ public class PuzzleActivity extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(this, "onItemClicked: position = " + position + ", id = " + id, Toast.LENGTH_SHORT).show();
-        if (position == 0) {
-            // whatever
-        } else {
-            // Book's showContent()
+        switch(position) {
+            default: case NAV_PUZZLE:
+                break;
+            case NAV_HISTORY:
+                showHistory();
+                break;
+            case NAV_SETTINGS:
+                showSettings();
+                break;
+            case NAV_HELP:
+                showHelp();
+                break;
+            case NAV_ABOUT:
+                showAbout();
+                break;
         }
 
         drawerLayout.closeDrawers();
@@ -386,15 +404,53 @@ public class PuzzleActivity extends AppCompatActivity implements AdapterView.OnI
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close);
 
-        drawerLayout.setDrawerListener(toggle);
+        drawerLayout.addDrawerListener(toggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        ListView drawer = (ListView) findViewById(R.id.drawer);
-        drawer.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_row, getResources().getStringArray(R.array.drawer_rows)));
+        String[] drawerRows = getResources().getStringArray(R.array.drawer_rows);
+        drawer = (ListView) findViewById(R.id.drawer);
+        drawer.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        drawer.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_row, drawerRows));
         drawer.setOnItemClickListener(this);
-
+        drawer.setItemChecked(NAV_SETTINGS, true);
     }
+
+    private void showHistory() {
+        if (timer != null) {
+            timer.cancel(true);
+            timer = null;
+
+            drawer.setItemChecked(NAV_PUZZLE, true);
+            drawer.setItemChecked(NAV_HISTORY, false);
+            drawer.setItemChecked(NAV_SETTINGS, false);
+            drawer.setItemChecked(NAV_HELP, false);
+            drawer.setItemChecked(NAV_ABOUT, false);
+
+            initialize();
+            startActivity(new Intent(PuzzleActivity.this, HistoryActivity.class));
+        }
+    }
+
+    public void showSettings() {
+        Toast.makeText(this, "Navigation Drawer: user chose Settings", Toast.LENGTH_SHORT).show();
+    }
+
+    public void showHelp() {
+        getFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .add(new HelpDialog(), HelpDialog.NAME)
+                .commit();
+    }
+
+    public void showAbout() {
+        getFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .add(new AboutDialog(), AboutDialog.NAME)
+                .commit();
+    }
+
+
 
     private void retrieveGameHistory(final String easyJson, final String mediumJson, final String hardJson) {
         Gson historyGson = new Gson();
@@ -690,4 +746,6 @@ public class PuzzleActivity extends AppCompatActivity implements AdapterView.OnI
             return hardHistory;
         }
     }
+
+
 }
