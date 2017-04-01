@@ -37,4 +37,7 @@
     <string name="puzzle_hasn_t_been_solved_yet">Puzzle hasn\'t been solved yet</string>
     <string name="splash_page">Splash page</string>
     <string name="congratulations_you_did_it">Congratulations! You did it!</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="settings">Settings</string>
 </resources>

@@ -12,10 +12,14 @@ package net.ddns.raylam.sliding_puzzle;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +27,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +50,7 @@ import net.ddns.raylam.sliding_puzzle.ui.AboutDialog;
 import net.ddns.raylam.sliding_puzzle.ui.DifficultyDialog;
 import net.ddns.raylam.sliding_puzzle.ui.HelpDialog;
 
-public class PuzzleActivity extends AppCompatActivity {
+public class PuzzleActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     // Name of this Activity; used for logging/debugging purposes
     public static final String NAME = PuzzleActivity.class.getSimpleName();
 
@@ -54,6 +61,10 @@ public class PuzzleActivity extends AppCompatActivity {
     private static final String NAME_ELAPSED_TIME = "elapsedTime";
     private static final String NAME_SOLVE_TIME = "solveTime";
     private static final String NAME_ID = "id";
+
+    // Used for the Navigation Drawer
+    DrawerLayout drawerLayout = null;
+    ActionBarDrawerToggle toggle = null;
 
     // Bundle difficulty name when passing to DifficultyDialog also used for SharedPreferences
     public static final String NAME_DIFFICULTY = "difficulty";
@@ -204,6 +215,8 @@ public class PuzzleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.puzzleactivity);
 
+        setupNavigationDrawer();
+
 		findViewById(R.id.newPuzzle).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -286,24 +299,31 @@ public class PuzzleActivity extends AppCompatActivity {
 		}
 	}
 
-    @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        super.onCreateOptionsMenu(menu);
-
-        MenuItem mDifficulty = menu.add(0, MENU_DIFFICULTY, MENU_DIFFICULTY, R.string.difficultyItem);
-        mDifficulty.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-
-        MenuItem mHelp = menu.add(0, MENU_HELP, MENU_HELP, R.string.helpItem);
-        mHelp.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-
-        MenuItem mAbout = menu.add(0, MENU_ABOUT, MENU_ABOUT, R.string.aboutItem);
-        mAbout.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-
-        return true;
-    }
+	// Used to create ActionBar overflow items
+//    @Override
+//    public boolean onCreateOptionsMenu(final Menu menu) {
+//        super.onCreateOptionsMenu(menu);
+//
+//        MenuItem mDifficulty = menu.add(0, MENU_DIFFICULTY, MENU_DIFFICULTY, R.string.difficultyItem);
+//        mDifficulty.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+//
+//        MenuItem mHelp = menu.add(0, MENU_HELP, MENU_HELP, R.string.helpItem);
+//        mHelp.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+//
+//        MenuItem mAbout = menu.add(0, MENU_ABOUT, MENU_ABOUT, R.string.aboutItem);
+//        mAbout.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+//
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
+        // If the ActionBarDrawerToggle has already handled this, return
+        if (toggle.onOptionsItemSelected(item)) {
+            return(true);
+        }
+
+        // Used to handle ActionBar overflow items
         switch (item.getItemId()) {
             case MENU_DIFFICULTY:
                 DifficultyDialog difficultyDialog = new DifficultyDialog();
@@ -331,6 +351,49 @@ public class PuzzleActivity extends AppCompatActivity {
         }
 
         return false;
+    }
+
+    // Following overrides are for setting up the Navigation Drawer
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        toggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        toggle.onConfigurationChanged(newConfig);
+    }
+
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(this, "onItemClicked: position = " + position + ", id = " + id, Toast.LENGTH_SHORT).show();
+        if (position == 0) {
+            // whatever
+        } else {
+            // Book's showContent()
+        }
+
+        drawerLayout.closeDrawers();
+    }
+
+    public void setupNavigationDrawer() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close);
+
+        drawerLayout.setDrawerListener(toggle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        ListView drawer = (ListView) findViewById(R.id.drawer);
+        drawer.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_row, getResources().getStringArray(R.array.drawer_rows)));
+        drawer.setOnItemClickListener(this);
+
     }
 
     private void retrieveGameHistory(final String easyJson, final String mediumJson, final String hardJson) {
