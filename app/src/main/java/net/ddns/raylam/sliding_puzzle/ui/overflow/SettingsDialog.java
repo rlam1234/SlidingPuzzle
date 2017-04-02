@@ -130,7 +130,7 @@ public class SettingsDialog extends DialogFragment {
         sharedPreferences = activity.getSharedPreferences(PuzzleActivity.NAME, MODE_PRIVATE);
 
         // Sound Settings
-        soundEnabled = sharedPreferences.getBoolean(PuzzleActivity.NAME_SOUND_ENABLED, false);
+        soundEnabled = sharedPreferences.getBoolean(PuzzleActivity.NAME_SOUND_ENABLED, true);
 
         // ScrollView contains RelativeLayout contains required Views
         soundSwitch = (Switch) ((ScrollView) view).getChildAt(0).findViewById(R.id.soundSwitch);

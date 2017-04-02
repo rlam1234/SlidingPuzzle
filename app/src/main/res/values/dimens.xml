@@ -12,4 +12,6 @@
     <dimen name="elapsedTimeCellWidth">40dp</dimen>
     <dimen name="movesCellWidth">40dp</dimen>
     <dimen name="settingsMargin">12dp</dimen>
+    <dimen name="settings_padding">5dp</dimen>
+    <dimen name="volume_start_margin">6dp</dimen>
 </resources>

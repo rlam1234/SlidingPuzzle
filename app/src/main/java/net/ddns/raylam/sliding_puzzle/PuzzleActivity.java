@@ -17,6 +17,7 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -74,7 +75,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
     private int moves = 0;				// Number of moves taken so far
     private TimerTask timer;
-    private int solveTime = 0;			// Time taken to solve the puzzle (in seconds)
+    private int solveTime = -1;			// Time taken to solve the puzzle (in seconds)
     private TextView movesView;
     private TextView timeView;
 
@@ -114,7 +115,7 @@ public class PuzzleActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             // If the puzzle's been solved already, don't allow the user to move the tiles around
-            if (solveTime != -1)
+            if (solveTime > -1)
                 return;
 
             int tileRow = -1;
@@ -133,12 +134,12 @@ public class PuzzleActivity extends AppCompatActivity {
                     || (tileRow == emptyTileRow && tileColumn == emptyTileColumn + 1)) {
                 tiles[emptyTileRow][emptyTileColumn].imageView.setImageDrawable(tiles[tileRow][tileColumn].imageView.getDrawable());
                 tiles[emptyTileRow][emptyTileColumn].imageView.setBackground(getDrawable(R.drawable.customborder));
-                int tmpIndex = tiles[emptyTileRow][emptyTileColumn].id;
+                int tmpId = tiles[emptyTileRow][emptyTileColumn].id;
                 tiles[emptyTileRow][emptyTileColumn].id = tiles[tileRow][tileColumn].id;
 
                 tiles[tileRow][tileColumn].imageView.setImageDrawable(getDrawable(R.drawable.blank));
                 tiles[tileRow][tileColumn].imageView.setBackground(null);
-                tiles[tileRow][tileColumn].id = tmpIndex;
+                tiles[tileRow][tileColumn].id = tmpId;
 
                 emptyTileRow = tileRow;
                 emptyTileColumn = tileColumn;
@@ -170,6 +171,8 @@ public class PuzzleActivity extends AppCompatActivity {
 
         private TimerTask(@NonNull PuzzleActivity puzzleActivity) {
             puzzleActivityWeakReference = new WeakReference<>(puzzleActivity);
+
+            Log.w(NAME, "instantiating TimerTask(" + puzzleActivity + ")");
         }
 
         @Override
@@ -220,7 +223,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
 			initialize();
-            timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(timer.elapsedTime));
+            timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(0));
         } else {
             emptyTileRow = savedInstanceState.getInt(NAME_EMPTY_ROW);
             emptyTileColumn = savedInstanceState.getInt(NAME_EMPTY_COLUMN);
@@ -232,10 +235,16 @@ public class PuzzleActivity extends AppCompatActivity {
 				timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
 			}
             else {
-                timer = new TimerTask(this);
-                timer.elapsedTime = savedInstanceState.getInt(NAME_ELAPSED_TIME);
-                timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(timer.elapsedTime));
-				timer.execute();
+                int elapsedTime = savedInstanceState.getInt(NAME_ELAPSED_TIME);
+
+                Log.w(NAME, "elapsedTime = " + elapsedTime);
+
+                if (elapsedTime > 0) {
+                    timer = new TimerTask(this);
+                    timer.elapsedTime = elapsedTime;
+                    timer.execute();
+                }
+                timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(elapsedTime));
             }
 
             tiles[0][0] = new Tile(savedInstanceState.getInt(NAME_ID + "0"), (ImageView) findViewById(R.id.tile00));
@@ -257,12 +266,14 @@ public class PuzzleActivity extends AppCompatActivity {
         outState.putInt(NAME_EMPTY_ROW, emptyTileRow);
         outState.putInt(NAME_EMPTY_COLUMN, emptyTileColumn);
         outState.putInt(NAME_MOVES, moves);
-        outState.putInt(NAME_ELAPSED_TIME, timer == null ? -1 : timer.elapsedTime);
+        outState.putInt(NAME_ELAPSED_TIME, timer == null ? 0 : timer.elapsedTime);
         outState.putInt(NAME_SOLVE_TIME, solveTime);
 
 		if (timer != null) {
 			timer.cancel(true);
 			timer = null;
+
+            Log.w(NAME, "timer set to null");
 		}
 
 		for (int row = 0; row < MAX_ROWS; row++)
@@ -278,7 +289,8 @@ public class PuzzleActivity extends AppCompatActivity {
 		if (timer != null) {
 			timer.cancel(true);
 			timer = null;
-		}
+
+            Log.w(NAME, "timer set to null");		}
 	}
 
     @Override
@@ -292,13 +304,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        if (timer != null) {
-            solveTime = 0;
-            moves = 0;
-            timer.cancel(true);
-            timer = null;
-            timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
-        }
+        Log.w(NAME, "entering onOptionsItemSelected(" + item + ")");
 
         return actionBarOverflow.optionsItemSelected(item);
     }
@@ -392,6 +398,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
         setTileBackground();
 
+        timer = new TimerTask(this);
         timer.execute();
     }   // end randomizeTiles
 
@@ -437,7 +444,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
         initializeTiles();
 
-		timer = new TimerTask(this);
+//		timer = new TimerTask(this);
 	}
 
     private void initializeTiles() {
@@ -541,7 +548,10 @@ public class PuzzleActivity extends AppCompatActivity {
             solveTime = timer.elapsedTime;
 			timer.cancel(true);
 			timer = null;
-			timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
+
+            Log.w(NAME, "timer set to null");
+
+            timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
 
             // Save the game play history
             onHistoryChanged(difficulty, new SolveHistory(new Date(), solveTime, moves, difficulty));

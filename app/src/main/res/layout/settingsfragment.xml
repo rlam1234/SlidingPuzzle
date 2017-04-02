@@ -8,12 +8,6 @@
         android:padding="@dimen/titlePadding"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <android.support.v4.widget.Space
-            android:id="@+id/centerSpace"
-            android:visibility="invisible"
-            android:layout_centerInParent="true"
-            android:layout_width="0dp"
-            android:layout_height="0dp" />
         <TextView
             android:id="@+id/settingsTitle"
             android:text="@string/settingsText"
@@ -30,8 +24,10 @@
             android:textSize="@dimen/instructionSize"
             android:layout_alignStart="@id/settingsTitle"
             android:layout_below="@id/settingsTitle"
+            android:layout_marginTop="@dimen/settingsMargin"
             android:layout_marginStart="@dimen/settingsMargin"
             android:layout_marginBottom="@dimen/settingsMargin"
+            android:paddingBottom="@dimen/settings_padding"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Switch
@@ -63,6 +59,7 @@
             android:src="@drawable/volume_low"
             android:layout_alignStart="@id/volume"
             android:layout_below="@id/volume"
+            android:layout_marginStart="@dimen/volume_start_margin"
             android:layout_width="24dp"
             android:layout_height="24dp" />
         <ImageView
@@ -70,6 +67,7 @@
             android:src="@drawable/volume_high"
             android:layout_alignEnd="@id/volume"
             android:layout_below="@id/volume"
+            android:layout_marginEnd="@dimen/settingsMargin"
             android:layout_width="24dp"
             android:layout_height="24dp" />
         <View
