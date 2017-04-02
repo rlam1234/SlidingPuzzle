@@ -47,8 +47,8 @@
             android:textSize="@dimen/instructionSize"
             android:layout_below="@id/soundText"
             android:layout_alignStart="@id/settingsTitle"
-            android:layout_marginBottom="@dimen/titleMargin"
-            android:layout_marginStart="@dimen/titleMargin"
+            android:layout_marginBottom="@dimen/settingsMargin"
+            android:layout_marginStart="@dimen/settingsMargin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <SeekBar

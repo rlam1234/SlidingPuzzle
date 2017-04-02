@@ -77,8 +77,9 @@ public class HistoryLayout extends LinearLayout {
 
     public void updateHistory(SolveHistory solveHistory, int position) {
         if (solveHistory != null) {
-            historyAdapter.history.add(solveHistory);
-            historyAdapter.notifyItemChanged(historyAdapter.history.size() - 1);
+            historyAdapter.history.add(0, solveHistory);
+            for (int i = 0; i < historyAdapter.history.size(); i++)
+                historyAdapter.notifyItemChanged(i);
         }
     }
 }

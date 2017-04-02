@@ -555,19 +555,19 @@ public class PuzzleActivity extends AppCompatActivity {
         Type historyType = new TypeToken<List<SolveHistory>>() {}.getType();
 
         if (difficulty == DIFFICULTY1) {
-            easyHistory.add(solveHistory);
+            easyHistory.add(0, solveHistory);
             getSharedPreferences(NAME, MODE_PRIVATE)
                     .edit()
                     .putString(NAME_GAME_HISTORY1, historyGson.toJson(easyHistory, historyType))
                     .apply();
         } else if (difficulty == DIFFICULTY2) {
-            mediumHistory.add(solveHistory);
+            mediumHistory.add(0, solveHistory);
             getSharedPreferences(NAME, MODE_PRIVATE)
                     .edit()
                     .putString(NAME_GAME_HISTORY2, historyGson.toJson(mediumHistory, historyType))
                     .apply();
         } else if (difficulty == DIFFICULTY3) {
-            hardHistory.add(solveHistory);
+            hardHistory.add(0, solveHistory);
             getSharedPreferences(NAME, MODE_PRIVATE)
                     .edit()
                     .putString(NAME_GAME_HISTORY3, historyGson.toJson(hardHistory, historyType))
