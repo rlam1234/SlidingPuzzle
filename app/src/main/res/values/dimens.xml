@@ -11,4 +11,5 @@
     <dimen name="dateCellWidth">120dp</dimen>
     <dimen name="elapsedTimeCellWidth">40dp</dimen>
     <dimen name="movesCellWidth">40dp</dimen>
+    <dimen name="settingsMargin">12dp</dimen>
 </resources>

@@ -14,20 +14,25 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
 public class AppActivity extends AppCompatActivity {
     public static final String NAME = AppActivity.class.getSimpleName();
-    public static final String NAME_POSITION = "position";
+    private static final String NAME_POSITION = "position";
+    private static final String NAME_SOUND_ENABLED = "soundEnabled";
+    private boolean allowSound;
 
-    MediaPlayer mediaPlayer;
+    MediaPlayer mediaPlayer = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.appactivity);
+
+        allowSound = getSharedPreferences(PuzzleActivity.NAME, MODE_PRIVATE).getBoolean(NAME_SOUND_ENABLED, true);
 
         findViewById(R.id.attributionText).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,25 +41,37 @@ public class AppActivity extends AppCompatActivity {
             }
         });
 
-        // If the user presses the hard volumne up/down buttons, affect the Multimedia stream, not the ringer.
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        mediaPlayer = MediaPlayer.create(this, R.raw.intro);
+        if (allowSound) {
+            // If the user presses the hard volumne up/down buttons, affect the Multimedia stream, not the ringer.
+            setVolumeControlStream(AudioManager.STREAM_MUSIC);
+            mediaPlayer = MediaPlayer.create(this, R.raw.intro);
 
-        mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
-            @Override
-            public void onCompletion(final MediaPlayer mp) {
-                doneWithMediaPlayer();
+            mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+                @Override
+                public void onCompletion(final MediaPlayer mp) {
+                    doneWithMediaPlayer();
 
-                startActivity(new Intent(AppActivity.this, PuzzleActivity.class));
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                finish();
-            }
-        });
+                    startActivity(new Intent(AppActivity.this, PuzzleActivity.class));
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    finish();
+                }
+            });
 
-        if (savedInstanceState != null)
-            mediaPlayer.seekTo(savedInstanceState.getInt(NAME_POSITION));
+            if (savedInstanceState != null)
+                mediaPlayer.seekTo(savedInstanceState.getInt(NAME_POSITION));
 
-		mediaPlayer.start();
+            mediaPlayer.start();
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(AppActivity.this, PuzzleActivity.class));
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    finish();
+
+                }
+            }, 1000);
+        }
     }   // end onCreate
 
     @Override

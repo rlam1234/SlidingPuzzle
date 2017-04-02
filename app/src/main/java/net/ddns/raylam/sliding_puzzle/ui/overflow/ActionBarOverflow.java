@@ -1,19 +1,16 @@
-package net.ddns.raylam.sliding_puzzle;
+package net.ddns.raylam.sliding_puzzle.ui.overflow;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import net.ddns.raylam.sliding_puzzle.ui.AboutDialog;
-import net.ddns.raylam.sliding_puzzle.ui.DifficultyDialog;
-import net.ddns.raylam.sliding_puzzle.ui.HelpDialog;
-
-import static android.content.Context.MODE_PRIVATE;
+import net.ddns.raylam.sliding_puzzle.PuzzleActivity;
+import net.ddns.raylam.sliding_puzzle.R;
 
 public class ActionBarOverflow {
     // Name of this Activity; used for logging/debugging purposes
@@ -81,9 +78,12 @@ public class ActionBarOverflow {
     }
 
     private void menuSettings() {
+        SharedPreferences sp = activity.getSharedPreferences(PuzzleActivity.NAME, Context.MODE_PRIVATE);
+        Log.w(NAME, "soundEnabled = " + sp.getBoolean(PuzzleActivity.NAME_SOUND_ENABLED, false) + ", difficulty = " + sp.getInt(PuzzleActivity.NAME_DIFFICULTY, -1));
+
         activity.getFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .add(new DifficultyDialog(), DifficultyDialog.NAME)
+                .add(new SettingsDialog(), SettingsDialog.NAME)
                 .commit();
     }
 

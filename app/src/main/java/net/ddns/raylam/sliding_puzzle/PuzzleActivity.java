@@ -17,7 +17,6 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +30,7 @@ import com.google.gson.reflect.TypeToken;
 
 import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 import net.ddns.raylam.sliding_puzzle.data.Tile;
+import net.ddns.raylam.sliding_puzzle.ui.overflow.ActionBarOverflow;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
@@ -50,6 +50,8 @@ public class PuzzleActivity extends AppCompatActivity {
     private static final String NAME_ELAPSED_TIME = "elapsedTime";
     private static final String NAME_SOLVE_TIME = "solveTime";
     private static final String NAME_ID = "id";
+
+    public static final String NAME_SOUND_ENABLED = "soundEnabled";
 
     // Bundle difficulty name when passing to DifficultyDialog also used for SharedPreferences
     public static final String NAME_DIFFICULTY = "difficulty";
@@ -290,6 +292,14 @@ public class PuzzleActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
+        if (timer != null) {
+            solveTime = 0;
+            moves = 0;
+            timer.cancel(true);
+            timer = null;
+            timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
+        }
+
         return actionBarOverflow.optionsItemSelected(item);
     }
 

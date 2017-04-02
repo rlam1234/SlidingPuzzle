@@ -9,33 +9,27 @@
  */
 package net.ddns.raylam.sliding_puzzle;
 
-import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
-import net.ddns.raylam.sliding_puzzle.ui.AboutDialog;
-import net.ddns.raylam.sliding_puzzle.ui.DifficultyDialog;
-import net.ddns.raylam.sliding_puzzle.ui.HelpDialog;
+import net.ddns.raylam.sliding_puzzle.ui.overflow.ActionBarOverflow;
 import net.ddns.raylam.sliding_puzzle.ui.history.HistoryLayout;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.jar.Attributes;
 
 public class HistoryActivity extends AppCompatActivity {
     public static final String NAME = HistoryActivity.class.getSimpleName();

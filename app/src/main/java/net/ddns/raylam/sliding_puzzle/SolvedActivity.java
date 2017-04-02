@@ -26,32 +26,49 @@ public class SolvedActivity extends AppCompatActivity {
     public static final String NAME = SolvedActivity.class.getSimpleName();
     public static final String NAME_POSITION = "position";
 
-    MediaPlayer mediaPlayer;
+    private static final String NAME_SOUND_ENABLED = "soundEnabled";
+    private boolean allowSound;
+
+    MediaPlayer mediaPlayer = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.solvedactivity);
 
-        // If the user presses the hard volumne up/down buttons, affect the Multimedia stream, not the ringer.
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        mediaPlayer = MediaPlayer.create(this, R.raw.yay);
+        allowSound = getSharedPreferences(PuzzleActivity.NAME, MODE_PRIVATE).getBoolean(NAME_SOUND_ENABLED, true);
 
-        mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
-            @Override
-            public void onCompletion(final MediaPlayer mp) {
-                doneWithMediaPlayer();
+        if (allowSound) {
+            // If the user presses the hard volumne up/down buttons, affect the Multimedia stream, not the ringer.
+            setVolumeControlStream(AudioManager.STREAM_MUSIC);
+            mediaPlayer = MediaPlayer.create(this, R.raw.yay);
 
-                startActivity(new Intent(SolvedActivity.this, HistoryActivity.class));
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                finish();
-            }
-        });
+            mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+                @Override
+                public void onCompletion(final MediaPlayer mp) {
+                    doneWithMediaPlayer();
 
-        if (savedInstanceState != null)
-            mediaPlayer.seekTo(savedInstanceState.getInt(NAME_POSITION));
+                    startActivity(new Intent(SolvedActivity.this, HistoryActivity.class));
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    finish();
+                }
+            });
 
-        mediaPlayer.start();
+            if (savedInstanceState != null)
+                mediaPlayer.seekTo(savedInstanceState.getInt(NAME_POSITION));
+
+            mediaPlayer.start();
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(SolvedActivity.this, HistoryActivity.class));
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    finish();
+
+                }
+            }, 1500);
+        }
     }   // end onCreate
 
     @Override

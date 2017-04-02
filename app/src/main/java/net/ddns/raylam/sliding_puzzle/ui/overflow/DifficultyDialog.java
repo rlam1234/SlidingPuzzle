@@ -7,14 +7,12 @@
  * Therefore, any reproduction or modification by any means is strictly prohibited without prior written permission.
  *
  */
-package net.ddns.raylam.sliding_puzzle.ui;
+package net.ddns.raylam.sliding_puzzle.ui.overflow;
 
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_gravity="center"
+        android:padding="@dimen/titlePadding"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v4.widget.Space
+            android:id="@+id/centerSpace"
+            android:visibility="invisible"
+            android:layout_centerInParent="true"
+            android:layout_width="0dp"
+            android:layout_height="0dp" />
+        <TextView
+            android:id="@+id/settingsTitle"
+            android:text="@string/settingsText"
+            android:textSize="@dimen/titleSize"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="@dimen/titleMargin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/soundText"
+            android:text="Sound"
+            android:textSize="@dimen/instructionSize"
+            android:layout_alignStart="@id/settingsTitle"
+            android:layout_below="@id/settingsTitle"
+            android:layout_marginStart="@dimen/settingsMargin"
+            android:layout_marginBottom="@dimen/settingsMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Switch
+            android:id="@+id/soundSwitch"
+            android:layout_alignBottom="@id/soundText"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/volumeText"
+            android:text="Volume"
+            android:textSize="@dimen/instructionSize"
+            android:layout_below="@id/soundText"
+            android:layout_alignStart="@id/settingsTitle"
+            android:layout_marginBottom="@dimen/titleMargin"
+            android:layout_marginStart="@dimen/titleMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <SeekBar
+            android:id="@+id/volume"
+            android:layout_alignStart="@id/volumeText"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/volumeText"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp" />
+        <ImageView
+            android:id="@+id/lowerVolume"
+            android:src="@drawable/volume_low"
+            android:layout_alignStart="@id/volume"
+            android:layout_below="@id/volume"
+            android:layout_width="24dp"
+            android:layout_height="24dp" />
+        <ImageView
+            android:id="@+id/higherVolume"
+            android:src="@drawable/volume_high"
+            android:layout_alignEnd="@id/volume"
+            android:layout_below="@id/volume"
+            android:layout_width="24dp"
+            android:layout_height="24dp" />
+        <View
+            android:id="@+id/spacer"
+            android:background="@color/colorAccent"
+            android:layout_below="@id/lowerVolume"
+            android:layout_marginTop="@dimen/settingsMargin"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <TextView
+            android:id="@+id/difficultyText"
+            android:text="@string/difficultyItem"
+            android:textSize="@dimen/instructionSize"
+            android:layout_below="@id/spacer"
+            android:layout_margin="@dimen/settingsMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Spinner
+            android:id="@+id/difficultySpinner"
+            android:spinnerMode="dropdown"
+            android:textSize="@dimen/instructionSize"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@id/difficultyText"
+            android:layout_width="120dp"
+            android:layout_height="match_parent"/>
+    </RelativeLayout>
+</ScrollView>

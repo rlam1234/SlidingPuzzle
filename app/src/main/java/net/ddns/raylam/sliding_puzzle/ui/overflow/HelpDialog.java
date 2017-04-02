@@ -7,25 +7,24 @@
  * Therefore, any reproduction or modification by any means is strictly prohibited without prior written permission.
  *
  */
-package net.ddns.raylam.sliding_puzzle.ui;
+package net.ddns.raylam.sliding_puzzle.ui.overflow;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import net.ddns.raylam.sliding_puzzle.R;
 
-public class AboutDialog extends DialogFragment {
-    public static String NAME = AboutDialog.class.getSimpleName();
+public class HelpDialog extends DialogFragment {
+    public static String NAME = HelpDialog.class.getSimpleName();
 
-    public AboutDialog() {}
+    public HelpDialog() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.aboutfragment, container);
-        getDialog().setTitle(R.string.aboutItem);
+        View view = inflater.inflate(R.layout.helpfragment, container);
+        getDialog().setTitle(R.string.helpItem);
 
         return view;
     }
