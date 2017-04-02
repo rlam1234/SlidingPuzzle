@@ -14,8 +14,11 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.ContentObserver;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -39,6 +42,7 @@ import net.ddns.raylam.sliding_puzzle.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Context.AUDIO_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
 public class SettingsDialog extends DialogFragment {
@@ -49,6 +53,8 @@ public class SettingsDialog extends DialogFragment {
     private Switch soundSwitch;
     private SeekBar volumeBar;
     private boolean soundEnabled;
+    private AudioManager audioManager;
+    private SettingsContentObserver settingsContentObserver;
 
     // Difficulty Settings
     private int difficulty;
@@ -96,6 +102,23 @@ public class SettingsDialog extends DialogFragment {
         }
     }
 
+    private class SettingsContentObserver extends ContentObserver {
+        public SettingsContentObserver(Context context, Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public boolean deliverSelfNotifications() {
+            return false;
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            if (volumeBar != null)
+                volumeBar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+        }
+    }
+
     // Fragments require a no-arg constructor
     public SettingsDialog() {}
 
@@ -124,8 +147,35 @@ public class SettingsDialog extends DialogFragment {
             }
         });
 
-        // TODO: Volume Settings
+        // Volume Settings
 
+        // If the user presses the hard volumne up/down buttons, affect the Multimedia stream, not the ringer.
+        activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+        audioManager = (AudioManager) activity.getSystemService(AUDIO_SERVICE);
+        volumeBar = (SeekBar) ((ScrollView) view).getChildAt(0).findViewById(R.id.volume);
+        volumeBar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+        volumeBar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+        volumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser)
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        // Listen for hard volume up/down button events and update volumeBar
+        // Code from http://stackoverflow.com/questions/11318933/listen-to-volume-changes-events-on-android
+        settingsContentObserver = new SettingsContentObserver(activity, new Handler());
+        activity.getApplicationContext()
+                .getContentResolver()
+                .registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, settingsContentObserver);
 
         // Difficulty Settings
         difficultyLevels.add(getString(R.string.difficultyText1));
@@ -156,5 +206,12 @@ public class SettingsDialog extends DialogFragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        getActivity().getContentResolver().unregisterContentObserver(settingsContentObserver);
+
+        super.onDestroyView();
     }
 }
