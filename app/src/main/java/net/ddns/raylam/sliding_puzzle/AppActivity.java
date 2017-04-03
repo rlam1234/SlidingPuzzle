@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 public class AppActivity extends AppCompatActivity {
@@ -42,6 +43,8 @@ public class AppActivity extends AppCompatActivity {
         });
 
         if (allowSound) {
+            Log.w(NAME, "onCreate: sound enabled = " + allowSound);
+
             // If the user presses the hard volumne up/down buttons, affect the Multimedia stream, not the ringer.
             setVolumeControlStream(AudioManager.STREAM_MUSIC);
             mediaPlayer = MediaPlayer.create(this, R.raw.intro);

@@ -269,12 +269,7 @@ public class PuzzleActivity extends AppCompatActivity {
         outState.putInt(NAME_ELAPSED_TIME, timer == null ? 0 : timer.elapsedTime);
         outState.putInt(NAME_SOLVE_TIME, solveTime);
 
-		if (timer != null) {
-			timer.cancel(true);
-			timer = null;
-
-            Log.w(NAME, "timer set to null");
-		}
+		stopTimer();
 
 		for (int row = 0; row < MAX_ROWS; row++)
             for (int columns = 0; columns < MAX_COLS; columns++)
@@ -286,11 +281,8 @@ public class PuzzleActivity extends AppCompatActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if (timer != null) {
-			timer.cancel(true);
-			timer = null;
 
-            Log.w(NAME, "timer set to null");		}
+		stopTimer();
 	}
 
     @Override
@@ -398,6 +390,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
         setTileBackground();
 
+		stopTimer();
         timer = new TimerTask(this);
         timer.execute();
     }   // end randomizeTiles
@@ -582,4 +575,12 @@ public class PuzzleActivity extends AppCompatActivity {
                     .apply();
         }
     }
+
+    private void stopTimer() {
+		if (timer != null) {
+			timer.cancel(true);
+			timer = null;
+			Log.w(NAME, "set timer to null");
+		}
+	}
 }

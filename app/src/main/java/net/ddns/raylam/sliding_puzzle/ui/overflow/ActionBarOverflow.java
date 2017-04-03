@@ -79,7 +79,8 @@ public class ActionBarOverflow {
 
     private void menuSettings() {
         SharedPreferences sp = activity.getSharedPreferences(PuzzleActivity.NAME, Context.MODE_PRIVATE);
-        Log.w(NAME, "soundEnabled = " + sp.getBoolean(PuzzleActivity.NAME_SOUND_ENABLED, false) + ", difficulty = " + sp.getInt(PuzzleActivity.NAME_DIFFICULTY, -1));
+        Log.w(NAME, "soundEnabled = " + sp.getBoolean(PuzzleActivity.NAME_SOUND_ENABLED, true)
+                + ", difficulty = " + sp.getInt(PuzzleActivity.NAME_DIFFICULTY, -1));
 
         activity.getFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
