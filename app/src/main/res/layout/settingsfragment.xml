@@ -53,7 +53,7 @@
             android:layout_alignParentEnd="true"
             android:layout_below="@id/volumeText"
             android:layout_width="wrap_content"
-            android:layout_height="32dp" />
+            android:layout_height="24dp" />
         <ImageView
             android:id="@+id/lowerVolume"
             android:src="@drawable/volume_low"

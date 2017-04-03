@@ -12,6 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="32dp"/>
+
         <TextView
             android:text="@string/aboutItem"
             android:textSize="@dimen/titleSize"
@@ -33,7 +37,6 @@
         <TextView
             android:text="@string/creditsText"
             android:layout_marginTop="@dimen/titleMargin"
-            android:layout_marginBottom="@dimen/titleMargin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
