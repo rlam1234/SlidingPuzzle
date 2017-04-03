@@ -359,7 +359,7 @@ public class PuzzleActivity extends AppCompatActivity {
         else
             maximumMoves = MAXIMUM_MOVES3;
 
-        while (counter < maximumMoves) {
+        do {
             // Pick a random direction to move the empty tile;
             // if it's moving the tile back where just it came from, pick another direction
             int direction = randomDirection();
@@ -394,7 +394,7 @@ public class PuzzleActivity extends AppCompatActivity {
                         counter++;
                     }
             }   // end switch
-        }   // end while
+        } while (counter < maximumMoves || isSolved());
 
         setTileBackground();
 
@@ -443,8 +443,6 @@ public class PuzzleActivity extends AppCompatActivity {
         tiles[2][2] = new Tile(8, (ImageView) findViewById(R.id.tile22));
 
         initializeTiles();
-
-//		timer = new TimerTask(this);
 	}
 
     private void initializeTiles() {

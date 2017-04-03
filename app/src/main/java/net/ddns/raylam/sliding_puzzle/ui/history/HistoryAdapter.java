@@ -14,6 +14,7 @@ import android.net.LocalSocketAddress;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import net.ddns.raylam.sliding_puzzle.R;
@@ -27,8 +28,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<CellViewHolder> {
 
     public List<SolveHistory> history = new ArrayList<>();
     private final LayoutInflater layoutInflater;
+	private final Context context;
+	private int position;
 
     public HistoryAdapter(Context context, ViewGroup layout) {
+		this.context = context;
         layoutInflater = LayoutInflater.from(context);
         setHasStableIds(true);
     }
@@ -36,12 +40,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<CellViewHolder> {
     // Returns the stable ID for the item at the given position
     @Override
     public long getItemId(int position) {
+		this.position = position;
         return position;
     }
 
     @Override
     public CellViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new CellViewHolder(layoutInflater.inflate(R.layout.historycell, parent, false));
+		View historyCell = layoutInflater.inflate(R.layout.historycell, parent, false);
+		if (position % 2 == 0)
+			historyCell.setBackgroundColor(context.getColor(R.color.androidGreen));
+
+        return new CellViewHolder(historyCell);
     }
 
     @Override
