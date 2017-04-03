@@ -10,7 +10,6 @@
 package net.ddns.raylam.sliding_puzzle.ui.overflow;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -28,11 +27,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
-import android.widget.RadioButton;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -69,6 +66,8 @@ public class SettingsDialog extends DialogFragment {
 
         private SpinnerAdapter(Context context, List<String> difficultyLevels) {
             super(context, 0, difficultyLevels);
+
+            Log.w(NAME, "constructing SpinnerAdapter(" + context + ", " + difficultyLevels + ")");
 
             layoutInflater = LayoutInflater.from(context);
         }
@@ -149,7 +148,7 @@ public class SettingsDialog extends DialogFragment {
 
         // Volume Settings
 
-        // If the user presses the hard volumne up/down buttons, affect the Multimedia stream, not the ringer.
+        // If the user presses the hard volume up/down buttons, affect the Multimedia stream, not the ringer.
         activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         audioManager = (AudioManager) activity.getSystemService(AUDIO_SERVICE);
@@ -193,11 +192,16 @@ public class SettingsDialog extends DialogFragment {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String level = spinnerAdapter.getItem(position);
                 spinnerAdapter.selectedItemPosition = position;
                 difficulty = position + 1;  // position is base 0 but difficulty levels are base 1
                 sharedPreferences.edit().putInt(PuzzleActivity.NAME_DIFFICULTY, difficulty).apply();
-            }
+
+				// If the user changes the difficulty level, randomize the puzzle.
+				// This avoids the user cheating by starting at an easy level, changing
+				// the spinner and completing the easy puzzle but getting credit for doing
+				// a hard one.
+				((PuzzleActivity) getActivity()).randomizeTiles();
+			}
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {

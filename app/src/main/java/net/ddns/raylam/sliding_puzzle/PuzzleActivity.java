@@ -328,7 +328,7 @@ public class PuzzleActivity extends AppCompatActivity {
      * Randomize the puzzle board by moving the blank tile around (using valid movements); this will
      * ensure that the resulting board is solvable vs just randomly placing all the tiles on the puzzle.
      */
-    private void randomizeTiles() {
+    public void randomizeTiles() {
         // Maximum number of times to randomly move the empty tile around; the more times it's moved,
         // the harder the puzzle will be to solve.  These numbers should be odd to avoid the small
         // chance that the randomized puzzle will actually be in the solved state.
