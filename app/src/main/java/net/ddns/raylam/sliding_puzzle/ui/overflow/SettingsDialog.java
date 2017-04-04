@@ -194,6 +194,7 @@ public class SettingsDialog extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 spinnerAdapter.selectedItemPosition = position;
+                int oldDifficulty = difficulty;
                 difficulty = position + 1;  // position is base 0 but difficulty levels are base 1
                 sharedPreferences.edit().putInt(PuzzleActivity.NAME_DIFFICULTY, difficulty).apply();
 
@@ -201,7 +202,7 @@ public class SettingsDialog extends DialogFragment {
 				// This avoids the user cheating by starting at an easy level, changing
 				// the spinner and completing the easy puzzle but getting credit for doing
 				// a hard one.
-                if (activity instanceof PuzzleActivity) {
+                if (difficulty != oldDifficulty && activity instanceof PuzzleActivity) {
                     ((PuzzleActivity) activity).stopTimer();
                     ((PuzzleActivity) activity).initialize();
                 }

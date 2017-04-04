@@ -13,6 +13,7 @@
     <string name="android22Text">Empty tile</string>
     <string name="errorCannotMove">That tile cannot be moved yet</string>
     <string name="errorCannotMoveEmpty">There is no tile there</string>
+    <string name="errorNewPuzzle">You must start a new puzzle before moving the tiles</string>
     <string name="attributionUrl">https://developer.android.com/distribute/marketing-tools/brand-guidelines.html</string>
     <string name="time">Time</string>
     <string name="moves">Moves</string>
@@ -39,6 +40,9 @@ The yay sound was obtained from https://www.freesound.org/people/xtrgamr/sounds/
 and is used under the Creative Commons Attribution License (https://creativecommons.org/licenses/by/3.0/).</string>
     <string name="creditsItem">Credits to...</string>
     <string name="creditsText">Android robot by Google.
+\n\nIntro music is Humoresque Op 101 No 7 by Antonín Dvořák.
+\n\nYay sound by xtrgamr.</string>
+    <string name="old_credits_ext">Android robot by Google.
 \n\nIntro music by longzijun.
 \n\nYay sound by xtrgamr.</string>
     <string name="play_history_easy">Easy Difficulty</string>

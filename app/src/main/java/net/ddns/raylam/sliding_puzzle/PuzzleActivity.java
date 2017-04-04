@@ -115,8 +115,11 @@ public class PuzzleActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             // If the puzzle's been solved already, don't allow the user to move the tiles around
-            if (timer == null)
+            if (timer == null) {
+                Toast.makeText(PuzzleActivity.this, R.string.errorNewPuzzle, Toast.LENGTH_SHORT).show();
+
                 return;
+            }
 
             int tileRow = -1;
             int tileColumn = -1;
@@ -151,9 +154,9 @@ public class PuzzleActivity extends AppCompatActivity {
                     puzzleSolved();
             } else {    // We can't move the selected tile; tell the user why not
                 if (tileRow == emptyTileRow && tileColumn == emptyTileColumn) {
-                    Toast.makeText(getBaseContext(), getString(R.string.errorCannotMoveEmpty), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PuzzleActivity.this, getString(R.string.errorCannotMoveEmpty), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getBaseContext(), getString(R.string.errorCannotMove), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PuzzleActivity.this, getString(R.string.errorCannotMove), Toast.LENGTH_SHORT).show();
                 }
             }
         }
