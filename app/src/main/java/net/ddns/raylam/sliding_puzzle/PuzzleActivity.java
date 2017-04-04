@@ -115,7 +115,7 @@ public class PuzzleActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             // If the puzzle's been solved already, don't allow the user to move the tiles around
-            if (solveTime > -1)
+            if (timer == null)
                 return;
 
             int tileRow = -1;
@@ -231,7 +231,7 @@ public class PuzzleActivity extends AppCompatActivity {
             movesView.setText(getString(R.string.moves) + ": " + Integer.toString(moves));
             solveTime = savedInstanceState.getInt(NAME_SOLVE_TIME);
 
-            if (solveTime > 0) {
+            if (solveTime > -1) {
 				timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
 			}
             else {
@@ -416,7 +416,7 @@ public class PuzzleActivity extends AppCompatActivity {
      * The initialized state is such that tiles[2][2] is the blank tile and the other elements
      * of the array are in order going from left to right, top to bottom.
      */
-    private void initialize() {
+    public void initialize() {
         // Reset the statistical counters
         moves = 0;
         movesView.setText(getString(R.string.moves) + ": " + Integer.toString(moves));
@@ -466,6 +466,8 @@ public class PuzzleActivity extends AppCompatActivity {
             for (int column = 0; column < MAX_COLS; column++) {
                 tiles[row][column].imageView.setOnClickListener(tileOnClickListener);
             }
+
+        setTileBackground();
     }
 
     /*
@@ -576,7 +578,7 @@ public class PuzzleActivity extends AppCompatActivity {
         }
     }
 
-    private void stopTimer() {
+    public void stopTimer() {
 		if (timer != null) {
 			timer.cancel(true);
 			timer = null;

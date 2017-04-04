@@ -25,6 +25,7 @@ import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 class CellViewHolder extends RecyclerView.ViewHolder {
     private static final String NAME = CellViewHolder.class.getSimpleName();
 
+    private View cell;
     private TextView date;
     private TextView elapsedTime;
     private TextView moves;
@@ -35,6 +36,8 @@ class CellViewHolder extends RecyclerView.ViewHolder {
     CellViewHolder(View itemView) {
         super(itemView);
 
+        cell = itemView;
+
         date = (TextView) itemView.findViewById(R.id.dateCell);
         elapsedTime = (TextView) itemView.findViewById(R.id.elapsedTimeCell);
         moves = (TextView) itemView.findViewById(R.id.movesCell);
@@ -44,7 +47,11 @@ class CellViewHolder extends RecyclerView.ViewHolder {
         TIME_FORMAT = android.text.format.DateFormat.getTimeFormat(itemView.getContext());
     }
 
-    void update(SolveHistory solveHistory, int position) {
+    void update(SolveHistory solveHistory, int position, boolean useAltBackground) {
+//  This appears to be bugged!
+//        if (useAltBackground)
+//            cell.setBackgroundColor(cell.getContext().getColor(R.color.androidGreen));
+
         String dateTime = ((SimpleDateFormat) DATE_FORMAT).format(solveHistory.date)
                 +   " "
                 +   ((SimpleDateFormat) TIME_FORMAT).format(solveHistory.date);

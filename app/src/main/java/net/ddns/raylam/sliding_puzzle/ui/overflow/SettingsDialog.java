@@ -44,6 +44,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class SettingsDialog extends DialogFragment {
     public static String NAME = SettingsDialog.class.getSimpleName();
+    private Activity activity;
     private SharedPreferences sharedPreferences;
 
     // Sound Settings
@@ -125,7 +126,7 @@ public class SettingsDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settingsfragment, container);
 
-        Activity activity = getActivity();
+        activity = getActivity();
         sharedPreferences = activity.getSharedPreferences(PuzzleActivity.NAME, MODE_PRIVATE);
 
         // Sound Settings
@@ -200,7 +201,10 @@ public class SettingsDialog extends DialogFragment {
 				// This avoids the user cheating by starting at an easy level, changing
 				// the spinner and completing the easy puzzle but getting credit for doing
 				// a hard one.
-				((PuzzleActivity) getActivity()).randomizeTiles();
+                if (activity instanceof PuzzleActivity) {
+                    ((PuzzleActivity) activity).stopTimer();
+                    ((PuzzleActivity) activity).initialize();
+                }
 			}
 
             @Override

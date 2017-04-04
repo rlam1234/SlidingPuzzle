@@ -3,14 +3,17 @@ package net.ddns.raylam.sliding_puzzle.ui.overflow;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import net.ddns.raylam.sliding_puzzle.HistoryActivity;
 import net.ddns.raylam.sliding_puzzle.PuzzleActivity;
 import net.ddns.raylam.sliding_puzzle.R;
+import net.ddns.raylam.sliding_puzzle.SolvedActivity;
 
 public class ActionBarOverflow {
     // Name of this Activity; used for logging/debugging purposes
@@ -35,6 +38,7 @@ public class ActionBarOverflow {
     public static final int MENU_SETTINGS = 1;
     public static final int MENU_HELP = 2;
     public static final int MENU_ABOUT = 3;
+    public static final int MENU_HISTORY = 4;
 
     // Game difficulty levels
     public static final int DIFFICULTY_LEVELS = 3;  // number of difficulty levels
@@ -60,6 +64,13 @@ public class ActionBarOverflow {
 
         MenuItem mAbout = menu.add(0, MENU_ABOUT, MENU_ABOUT, R.string.aboutItem);
         mAbout.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+        if (activity instanceof PuzzleActivity) {
+
+            MenuItem mHistory = menu.add(0, MENU_HISTORY, MENU_HISTORY, R.string.solveHistoryTitle);
+            mHistory.setIcon(R.drawable.ic_library_books_white_24dp);
+            mHistory.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        }
     }
 
     public boolean optionsItemSelected(MenuItem item) {
@@ -73,6 +84,9 @@ public class ActionBarOverflow {
         case MENU_ABOUT:
             menuAbout();
             return true;
+            case MENU_HISTORY:
+                menuHistory();
+                return true;
         }
         return false;
     }
@@ -102,5 +116,10 @@ public class ActionBarOverflow {
                 .commit();
     }
 
+    private void menuHistory() {
+        ((PuzzleActivity) activity).stopTimer();
+        activity.startActivity(new Intent(activity, HistoryActivity.class));
+        ((PuzzleActivity) activity).initialize();
+    }
 }
 

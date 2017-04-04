@@ -1,26 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/historyCellLayout"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/dateCell"
-        android:layout_weight="1"
-        android:gravity="start"
-        android:layout_width="@dimen/dateCellWidth"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:id="@+id/elapsedTimeCell"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:layout_width="@dimen/elapsedTimeCellWidth"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:id="@+id/movesCell"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:layout_width="@dimen/movesCellWidth"
-        android:layout_height="wrap_content" />
+    <View
+        android:background="@color/androidGreen"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <LinearLayout
+        android:id="@+id/historyCellLayout"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/dateCell"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:layout_width="@dimen/dateCellWidth"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/elapsedTimeCell"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:layout_width="@dimen/elapsedTimeCellWidth"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/movesCell"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:layout_width="@dimen/movesCellWidth"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </LinearLayout>
