@@ -17,7 +17,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import java.text.Format;
-import java.util.Date;
 import net.ddns.raylam.sliding_puzzle.PuzzleActivity;
 import net.ddns.raylam.sliding_puzzle.R;
 import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
@@ -47,10 +46,11 @@ class CellViewHolder extends RecyclerView.ViewHolder {
         TIME_FORMAT = android.text.format.DateFormat.getTimeFormat(itemView.getContext());
     }
 
-    void update(SolveHistory solveHistory, int position, boolean useAltBackground) {
-//  This appears to be bugged!
-//        if (useAltBackground)
-//            cell.setBackgroundColor(cell.getContext().getColor(R.color.androidGreen));
+    void update(SolveHistory solveHistory, int position) {
+        if (getLayoutPosition() % 2 == 0)
+            cell.setBackgroundColor(cell.getContext().getColor(R.color.androidGreen));
+        else
+            cell.setBackgroundColor(cell.getContext().getColor(R.color.white));
 
         String dateTime = ((SimpleDateFormat) DATE_FORMAT).format(solveHistory.date)
                 +   " "

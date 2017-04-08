@@ -23,14 +23,14 @@ import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryAdapter extends RecyclerView.Adapter<CellViewHolder> {
+class HistoryAdapter extends RecyclerView.Adapter<CellViewHolder> {
     private static final String NAME = HistoryAdapter.class.getSimpleName();
 
-    public List<SolveHistory> history = new ArrayList<>();
+    List<SolveHistory> history = new ArrayList<>();
     private final LayoutInflater layoutInflater;
 	private final Context context;
 
-    public HistoryAdapter(Context context, ViewGroup layout) {
+    HistoryAdapter(Context context, ViewGroup layout) {
 		this.context = context;
         layoutInflater = LayoutInflater.from(context);
         setHasStableIds(true);
@@ -39,7 +39,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<CellViewHolder> {
     // Returns the stable ID for the item at the given position
     @Override
     public long getItemId(int position) {
-        return position;
+        return history.get(position).date.getTime();
     }
 
     @Override
@@ -51,12 +51,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<CellViewHolder> {
 
     @Override
     public void onBindViewHolder(CellViewHolder holder, int position) {
-        Log.w(NAME, "onBindViewHolder, invoking holder.update(" + history.get(position)
-                + ", " + position
-                + ", " + (position % 2 == 0)
-                + ")");
-
-        holder.update(history.get(position), position, (position % 2 == 0));
+        holder.update(history.get(position), position);
     }
 
     @Override
