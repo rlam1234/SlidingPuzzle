@@ -12,7 +12,9 @@ package net.ddns.raylam.sliding_puzzle;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,7 +50,7 @@ public class HistoryActivity extends AppCompatActivity {
         private final LayoutInflater layoutInflater;
         private final ViewPager viewPager;
         private HistoryLayout historyLayout;
-        private List<List<SolveHistory>> historyList = new ArrayList<List<SolveHistory>>(3);
+        private List<List<SolveHistory>> historyList = new ArrayList<>(3);
 
         private Adapter(ViewPager viewPager) {
             this.viewPager = viewPager;
@@ -69,11 +71,11 @@ public class HistoryActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int difficultyPage) {
             switch(difficultyPage) {
                 case DIFFICULTY_HARD:
-                    return ((AppCompatActivity) viewPager.getContext()).getString(R.string.play_history_hard);
+                    return viewPager.getContext().getString(R.string.play_history_hard);
                 case DIFFICULTY_MEDIUM:
-                    return ((AppCompatActivity) viewPager.getContext()).getString(R.string.play_history_medium);
+                    return viewPager.getContext().getString(R.string.play_history_medium);
                 default: case DIFFICULTY_EASY:
-                    return ((AppCompatActivity) viewPager.getContext()).getString(R.string.play_history_easy);
+                    return viewPager.getContext().getString(R.string.play_history_easy);
             }
         }
 
@@ -105,9 +107,15 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(R.layout.historyactivity);
         actionBarOverflow = new ActionBarOverflow(this);
 
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(getString(R.string.solveHistoryTitle));
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getString(R.string.solveHistoryTitle));
+        }
+
+        PagerTitleStrip titleStrip = (PagerTitleStrip) findViewById(R.id.titleStrip);
+        titleStrip.setNonPrimaryAlpha(0.25f);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         adapter = new Adapter(viewPager);
@@ -120,6 +128,9 @@ public class HistoryActivity extends AppCompatActivity {
         difficulty = sharedPreferences.getInt(PuzzleActivity.NAME_DIFFICULTY, DIFFICULTY_EASY);
 
         viewPager.setAdapter(adapter);
+
+        // Show the solve history for the current difficulty level
+        viewPager.setCurrentItem(difficulty - 1);   // difficulty is base 1 but viewPager's items are base 0
     }   // end onCreate
 
     @Override

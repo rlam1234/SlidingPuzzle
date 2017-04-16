@@ -56,7 +56,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<CellViewHolder> {
                 + ", " + (position % 2 == 0)
                 + ")");
 
-        holder.update(history.get(position), position, (position % 2 == 0));
+        holder.update(history.get(position), position);
     }
 
     @Override
