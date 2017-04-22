@@ -14,9 +14,13 @@ package net.ddns.raylam.sliding_puzzle.data;
  *  the time taken to solve the puzzle, the number of moves required and the difficulty level.
  */
 
+import android.support.annotation.NonNull;
 import java.util.Date;
 
 public class SolveHistory {
+	private static final String NAME = SolveHistory.class.getSimpleName();
+
+	@NonNull
     public Date date = new Date();
     public int elapsedTime;
     public int moves;
@@ -24,7 +28,7 @@ public class SolveHistory {
 
     public SolveHistory() {};
 
-    public SolveHistory(Date date, int elapsedTime, int moves, int difficulty) {
+    public SolveHistory(final Date date, int elapsedTime, int moves, int difficulty) {
         if (date != null)
             this.date = date;
 
@@ -37,7 +41,10 @@ public class SolveHistory {
         this.difficulty = difficulty;
     }
 
-    public SolveHistory(String date, String elapsedTime, String moves, String difficulty) {
+    public SolveHistory(@NonNull final String date,
+						@NonNull final String elapsedTime,
+						@NonNull final String moves,
+						@NonNull final String difficulty) {
         this.date = new Date(Date.parse(date));
         this.elapsedTime = Integer.parseInt(elapsedTime);
         this.moves = Integer.parseInt(moves);

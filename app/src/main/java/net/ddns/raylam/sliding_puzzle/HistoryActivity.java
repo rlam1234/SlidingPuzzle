@@ -11,6 +11,7 @@ package net.ddns.raylam.sliding_puzzle;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +40,6 @@ public class HistoryActivity extends AppCompatActivity {
     private static final int DIFFICULTY_MEDIUM = 1;
     private static final int DIFFICULTY_HARD = 2;
 
-    private int difficulty;
     private ActionBarOverflow actionBarOverflow;
 
     public static final class Adapter extends PagerAdapter {
@@ -48,15 +48,15 @@ public class HistoryActivity extends AppCompatActivity {
         private final LayoutInflater layoutInflater;
         private final ViewPager viewPager;
         private HistoryLayout historyLayout;
-        private List<List<SolveHistory>> historyList = new ArrayList<List<SolveHistory>>(3);
+        private List<List<SolveHistory>> historyList = new ArrayList<>(DIFFICULTY_LEVELS);
 
-        private Adapter(ViewPager viewPager) {
+        private Adapter(@NonNull final ViewPager viewPager) {
             this.viewPager = viewPager;
             layoutInflater = LayoutInflater.from(viewPager.getContext());
         }
 
         @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
+        public void destroyItem(@NonNull final ViewGroup container, int position, @NonNull final Object object) {
             container.removeView((View) object);
         }
 
@@ -67,23 +67,22 @@ public class HistoryActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int difficultyPage) {
-            switch(difficultyPage) {
-                case DIFFICULTY_HARD:
-                    return ((AppCompatActivity) viewPager.getContext()).getString(R.string.play_history_hard);
-                case DIFFICULTY_MEDIUM:
-                    return ((AppCompatActivity) viewPager.getContext()).getString(R.string.play_history_medium);
-                default: case DIFFICULTY_EASY:
-                    return ((AppCompatActivity) viewPager.getContext()).getString(R.string.play_history_easy);
-            }
+            if (difficultyPage == DIFFICULTY_HARD) {
+				return viewPager.getContext().getString(R.string.play_history_hard);
+			} else if (difficultyPage == DIFFICULTY_MEDIUM) {
+				return viewPager.getContext().getString(R.string.play_history_medium);
+			} else {
+				return viewPager.getContext().getString(R.string.play_history_easy);
+			}
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object object) {
+        public boolean isViewFromObject(final View view, final Object object) {
             return view == object;
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int difficulty) {
+        public Object instantiateItem(@NonNull final ViewGroup container, int difficulty) {
             View view = layoutInflater.inflate(R.layout.gamehistory, container, false);
             container.addView(view);
 
@@ -100,7 +99,7 @@ public class HistoryActivity extends AppCompatActivity {
     private Adapter adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.historyactivity);
         actionBarOverflow = new ActionBarOverflow(this);
@@ -117,13 +116,12 @@ public class HistoryActivity extends AppCompatActivity {
                 sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY2, "[]"),
                 sharedPreferences.getString(PuzzleActivity.NAME_GAME_HISTORY3, "[]"));
 
-        difficulty = sharedPreferences.getInt(PuzzleActivity.NAME_DIFFICULTY, DIFFICULTY_EASY);
-
         viewPager.setAdapter(adapter);
+		viewPager.setCurrentItem(sharedPreferences.getInt(PuzzleActivity.NAME_DIFFICULTY, PuzzleActivity.DIFFICULTY1) - 1);
     }   // end onCreate
 
     @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull final Menu menu) {
         super.onCreateOptionsMenu(menu);
 
         actionBarOverflow.createMenuItems(menu);
@@ -133,14 +131,15 @@ public class HistoryActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        if (actionBarOverflow.optionsItemSelected(item))
-            return true;
-        else {
+        if (actionBarOverflow.optionsItemSelected(item)) {
+			return true;
+		} else {
             finish();
             return super.onOptionsItemSelected(item);
         }
     }
 
+    // Convert the solve history lists for easy, medium, hard difficulties from a JSON string to ArrayLists
     private void retrieveGameHistory(final String easyJson, final String mediumJson, final String hardJson) {
         Gson historyGson = new Gson();
         Type historyType = new TypeToken<List<SolveHistory>>() {}.getType();

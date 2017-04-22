@@ -9,6 +9,7 @@
  */
 package net.ddns.raylam.sliding_puzzle.data;
 
+import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 /*
@@ -17,10 +18,13 @@ import android.widget.ImageView;
  * The id contains an identifier to make it easier to programmatically determine which tile is which.
  */
 public class Tile {
-    public int id;
+	private static final String NAME = Tile.class.getSimpleName();
+
+	public int id;
+    @NonNull
     public ImageView imageView;
 
-    public Tile(int id, ImageView imageView) {
+    public Tile(int id, @NonNull final ImageView imageView) {
         this.id = id;
         this.imageView = imageView;
     }

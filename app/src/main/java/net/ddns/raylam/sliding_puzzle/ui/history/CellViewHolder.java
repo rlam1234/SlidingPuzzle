@@ -9,6 +9,7 @@
  */
 package net.ddns.raylam.sliding_puzzle.ui.history;
 
+import android.support.annotation.NonNull;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +33,10 @@ class CellViewHolder extends RecyclerView.ViewHolder {
     private final Format DATE_FORMAT;
     private final Format TIME_FORMAT;
 
-    CellViewHolder(View itemView) {
+	// Limit the number of characters in the date/time to make sure it doesn't overflow the field
+	private final int MAXIMUM_DATE_TIME_SIZE = 20;
+
+    CellViewHolder(@NonNull final View itemView) {
         super(itemView);
 
         cell = itemView;
@@ -46,18 +50,21 @@ class CellViewHolder extends RecyclerView.ViewHolder {
         TIME_FORMAT = android.text.format.DateFormat.getTimeFormat(itemView.getContext());
     }
 
-    void update(SolveHistory solveHistory, int position) {
-        if (getLayoutPosition() % 2 == 0)
-            cell.setBackgroundColor(cell.getContext().getColor(R.color.androidGreen));
-        else
-            cell.setBackgroundColor(cell.getContext().getColor(R.color.white));
+    void update(@NonNull final SolveHistory solveHistory) {
+		if (cell != null) {
+			if (getLayoutPosition() % 2 == 0) {
+				cell.setBackgroundColor(cell.getContext().getColor(R.color.androidGreen));
+			} else {
+				cell.setBackgroundColor(cell.getContext().getColor(R.color.white));
+			}
+		}
 
         String dateTime = ((SimpleDateFormat) DATE_FORMAT).format(solveHistory.date)
                 +   " "
                 +   ((SimpleDateFormat) TIME_FORMAT).format(solveHistory.date);
 
-        // Set the date to the first 20 characters to make sure we don't overflow the field
-        date.setText(dateTime.substring(0, dateTime.length() < 20 ? dateTime.length() : 20));
+		// Set text to the first MAXIMUM_DATE_TIME_SIZE characters to prevent field overflow
+        date.setText(dateTime.substring(0, Math.min(dateTime.length(), MAXIMUM_DATE_TIME_SIZE)));
         elapsedTime.setText(PuzzleActivity.intToHHMMSS(solveHistory.elapsedTime));
         moves.setText(NumberFormat.getInstance().format(solveHistory.moves));
     }
