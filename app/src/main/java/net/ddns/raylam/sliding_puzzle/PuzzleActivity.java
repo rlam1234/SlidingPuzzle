@@ -73,6 +73,9 @@ public class PuzzleActivity extends AppCompatActivity {
     public static final int MAX_ROWS = 3;
     public static final int MAX_COLS = 3;
 
+	// Animation duration is 125 ms
+	private static final int MOVE_TIME = 125;
+
     private int moves = 0;				// Number of moves taken so far
     private TimerTask timer;
     private int solveTime = -1;			// Time taken to solve the puzzle (in seconds)
@@ -107,7 +110,104 @@ public class PuzzleActivity extends AppCompatActivity {
     private List<SolveHistory> mediumHistory = new ArrayList<>();
     private List<SolveHistory> hardHistory = new ArrayList<>();
 
-    /*
+	private final class EndAnimationRunnable implements Runnable {
+		int tileRow;
+		int tileColumn;
+		int direction;
+
+		EndAnimationRunnable(int tileRow, int tileColumn, int direction) {
+			this.tileRow = tileRow;
+			this.tileColumn = tileColumn;
+			this.direction = direction;
+		}
+
+		@Override
+		public void run() {
+			if (direction == UP) {
+				tiles[tileRow][tileColumn].imageView
+					.animate()
+					.translationYBy(-tiles[tileRow][tileColumn].imageView.getHeight())
+					.setDuration(MOVE_TIME)
+					.withEndAction(new EndAnimationRunnable2(tileRow, tileColumn, direction));
+			} else if (direction == DOWN) {
+				tiles[tileRow][tileColumn].imageView
+					.animate()
+					.translationYBy(tiles[tileRow][tileColumn].imageView.getHeight())
+					.setDuration(MOVE_TIME)
+					.withEndAction(new EndAnimationRunnable2(tileRow, tileColumn, direction));
+			} else if (direction == LEFT) {
+				tiles[tileRow][tileColumn].imageView
+					.animate()
+					.translationXBy(-tiles[tileRow][tileColumn].imageView.getWidth())
+					.setDuration(MOVE_TIME)
+					.withEndAction(new EndAnimationRunnable2(tileRow, tileColumn, direction));
+			} else {	// direction == RIGHT
+				tiles[tileRow][tileColumn].imageView
+					.animate()
+					.translationXBy(-tiles[tileRow][tileColumn].imageView.getWidth())
+					.setDuration(MOVE_TIME)
+					.withEndAction(new EndAnimationRunnable2(tileRow, tileColumn, direction));
+			}
+		}
+	}
+
+	private final class EndAnimationRunnable2 implements Runnable {
+		int tileRow;
+		int tileColumn;
+		int direction;
+
+		EndAnimationRunnable2(int tileRow, int tileColumn, int direction) {
+			this.tileRow = tileRow;
+			this.tileColumn = tileColumn;
+			this.direction = direction;
+		}
+
+		@Override
+		public void run() {
+			if (direction == UP) {
+				tiles[tileRow][tileColumn].imageView
+					.animate()
+					.translationYBy(tiles[tileRow][tileColumn].imageView.getHeight())
+					.setDuration(0);
+			} else if (direction == DOWN) {
+				tiles[tileRow][tileColumn].imageView
+					.animate()
+					.translationYBy(-tiles[tileRow][tileColumn].imageView.getHeight())
+					.setDuration(0);
+			} else if (direction == LEFT) {
+				tiles[tileRow][tileColumn].imageView
+					.animate()
+					.translationXBy(tiles[tileRow][tileColumn].imageView.getHeight())
+					.setDuration(0);
+			} else {
+				tiles[tileRow][tileColumn].imageView
+					.animate()
+					.translationXBy(-tiles[tileRow][tileColumn].imageView.getHeight())
+					.setDuration(0);
+			}
+
+
+			tiles[emptyTileRow][emptyTileColumn].imageView.setImageDrawable(tiles[tileRow][tileColumn].imageView.getDrawable());
+			tiles[emptyTileRow][emptyTileColumn].imageView.setBackground(getDrawable(R.drawable.customborder));
+			int tmpId = tiles[emptyTileRow][emptyTileColumn].id;
+			tiles[emptyTileRow][emptyTileColumn].id = tiles[tileRow][tileColumn].id;
+
+			tiles[tileRow][tileColumn].imageView.setImageDrawable(getDrawable(R.drawable.blank));
+			tiles[tileRow][tileColumn].imageView.setBackground(null);
+			tiles[tileRow][tileColumn].id = tmpId;
+
+			emptyTileRow = tileRow;
+			emptyTileColumn = tileColumn;
+
+			moves++;
+			movesView.setText(getString(R.string.moves) + ": " + Integer.toString(moves));
+
+			if (isSolved())
+				puzzleSolved();
+
+		}
+	}
+		/*
      * This OnClickListener handles the actions associated with tapping on a tile (switching it with the empty tile,
      * and updating the various status boxes).
      */
@@ -131,27 +231,30 @@ public class PuzzleActivity extends AppCompatActivity {
                     }
 
             // Can we slide the tapped tile into the empty space?
-            if ((tileRow == emptyTileRow - 1 && tileColumn == emptyTileColumn)
-                    || (tileRow == emptyTileRow + 1 && tileColumn == emptyTileColumn)
-                    || (tileRow == emptyTileRow && tileColumn == emptyTileColumn - 1)
-                    || (tileRow == emptyTileRow && tileColumn == emptyTileColumn + 1)) {
-                tiles[emptyTileRow][emptyTileColumn].imageView.setImageDrawable(tiles[tileRow][tileColumn].imageView.getDrawable());
-                tiles[emptyTileRow][emptyTileColumn].imageView.setBackground(getDrawable(R.drawable.customborder));
-                int tmpId = tiles[emptyTileRow][emptyTileColumn].id;
-                tiles[emptyTileRow][emptyTileColumn].id = tiles[tileRow][tileColumn].id;
-
-                tiles[tileRow][tileColumn].imageView.setImageDrawable(getDrawable(R.drawable.blank));
-                tiles[tileRow][tileColumn].imageView.setBackground(null);
-                tiles[tileRow][tileColumn].id = tmpId;
-
-                emptyTileRow = tileRow;
-                emptyTileColumn = tileColumn;
-
-                moves++;
-                movesView.setText(getString(R.string.moves) + ": " + Integer.toString(moves));
-
-                if (isSolved())
-                    puzzleSolved();
+            if (tileRow == emptyTileRow - 1 && tileColumn == emptyTileColumn) {
+				tiles[tileRow][tileColumn].imageView
+					.animate()
+					.translationYBy(tiles[tileRow][tileColumn].imageView.getHeight())
+					.setDuration(MOVE_TIME)
+					.withEndAction(new EndAnimationRunnable2(tileRow, tileColumn, DOWN));
+			} else if (tileRow == emptyTileRow + 1 && tileColumn == emptyTileColumn) {
+				tiles[tileRow][tileColumn].imageView
+					.animate()
+					.translationYBy(-tiles[tileRow][tileColumn].imageView.getHeight())
+					.setDuration(MOVE_TIME)
+					.withEndAction(new EndAnimationRunnable2(tileRow, tileColumn, UP));
+			} else if (tileRow == emptyTileRow && tileColumn == emptyTileColumn - 1) {
+				tiles[tileRow][tileColumn].imageView
+					.animate()
+					.translationXBy(tiles[tileRow][tileColumn].imageView.getHeight())
+					.setDuration(MOVE_TIME)
+					.withEndAction(new EndAnimationRunnable2(tileRow, tileColumn, RIGHT));
+			} else if (tileRow == emptyTileRow && tileColumn == emptyTileColumn + 1) {
+				tiles[tileRow][tileColumn].imageView
+					.animate()
+					.translationXBy(-tiles[tileRow][tileColumn].imageView.getHeight())
+					.setDuration(MOVE_TIME)
+					.withEndAction(new EndAnimationRunnable2(tileRow, tileColumn, LEFT));
             } else {    // We can't move the selected tile; tell the user why not
                 if (tileRow == emptyTileRow && tileColumn == emptyTileColumn) {
                     Toast.makeText(PuzzleActivity.this, getString(R.string.errorCannotMoveEmpty), Toast.LENGTH_SHORT).show();
