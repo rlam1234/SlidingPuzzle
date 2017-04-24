@@ -76,6 +76,9 @@ public class PuzzleActivity extends AppCompatActivity {
 	// Animation duration is 125 ms
 	private static final int MOVE_TIME = 125;
 
+	// Fade in duration
+	private static final int FADE_IN_TIME = 500;
+
     private int moves = 0;				// Number of moves taken so far
     private TimerTask timer;
     private int solveTime = -1;			// Time taken to solve the puzzle (in seconds)
@@ -84,7 +87,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
     /*
      * tiles[][] represents the puzzle board with tiles[0][0] being the upper left square and tiles[2][2] the lower right square.
-     * A Tile is an ImageView which contains the picture of that tile and its associated id number, which identifies that tile
+     * A Tile is an ImageView which contains the picture of that tile and its associated id number, which identifies that Drawable
      * so it can be easily compared.
      */
     private Tile[][] tiles = new Tile[MAX_ROWS][MAX_COLS];
@@ -92,9 +95,6 @@ public class PuzzleActivity extends AppCompatActivity {
     // emptyTileRow and emptyTileColumn keep track of the indices of the empty tile.
     private int emptyTileRow = 2;
     private int emptyTileColumn = 2;
-
-    // Stores the images of the various puzzle pieces; puzzlePieces[i] holds the image of the puzzle piece with id i.
-    private Drawable[] puzzlePieces = new Drawable[MAX_ROWS * MAX_COLS];
 
     private ActionBarOverflow actionBarOverflow;
 
@@ -110,6 +110,7 @@ public class PuzzleActivity extends AppCompatActivity {
     private List<SolveHistory> mediumHistory = new ArrayList<>();
     private List<SolveHistory> hardHistory = new ArrayList<>();
 
+	// Tasks to perform after the tile animation (the animation slides the clicked tile into the empty space)
 	private final class EndAnimationRunnable implements Runnable {
 		int tileRow;
 		int tileColumn;
@@ -123,28 +124,50 @@ public class PuzzleActivity extends AppCompatActivity {
 
 		@Override
 		public void run() {
+			Runnable run = new EndResetAnimationRunnable(tileRow, tileColumn);
+
+			// Move the ImageView back where it started from so everything looks right for the user
 			if (direction == UP) {
 				tiles[tileRow][tileColumn].imageView
 					.animate()
 					.translationYBy(tiles[tileRow][tileColumn].imageView.getHeight())
-					.setDuration(0);
+					.setDuration(0)
+					.withEndAction(run);
 			} else if (direction == DOWN) {
 				tiles[tileRow][tileColumn].imageView
 					.animate()
 					.translationYBy(-tiles[tileRow][tileColumn].imageView.getHeight())
-					.setDuration(0);
+					.setDuration(0)
+					.withEndAction(run);
 			} else if (direction == LEFT) {
 				tiles[tileRow][tileColumn].imageView
 					.animate()
 					.translationXBy(tiles[tileRow][tileColumn].imageView.getHeight())
-					.setDuration(0);
+					.setDuration(0)
+					.withEndAction(run);
 			} else {
 				tiles[tileRow][tileColumn].imageView
 					.animate()
 					.translationXBy(-tiles[tileRow][tileColumn].imageView.getHeight())
-					.setDuration(0);
+					.setDuration(0)
+					.withEndAction(run);
 			}
+		}
+	}	// end class EndAnimationRunnable
 
+	private final class EndResetAnimationRunnable implements Runnable {
+		private int tileRow;
+		private int tileColumn;
+
+		EndResetAnimationRunnable(int tileRow, int tileColumn) {
+			this.tileRow = tileRow;
+			this.tileColumn = tileColumn;
+		}
+
+		@Override
+		public void run() {
+			// Switch the Drawable and its id between the tapped tile and the tile occupied by the empty space
+			// so tiles[][] has the up to date state of the puzzle board
 			tiles[emptyTileRow][emptyTileColumn].imageView.setImageDrawable(tiles[tileRow][tileColumn].imageView.getDrawable());
 			tiles[emptyTileRow][emptyTileColumn].imageView.setBackground(getDrawable(R.drawable.customborder));
 			int tmpId = tiles[emptyTileRow][emptyTileColumn].id;
@@ -165,7 +188,13 @@ public class PuzzleActivity extends AppCompatActivity {
 			}
 		}
 	}
-	
+
+	private final class SolvedRunnable implements Runnable {
+		@Override
+		public void run() {
+			startActivity(new Intent(PuzzleActivity.this, SolvedActivity.class));
+		}
+	}
 	/*
      * This OnClickListener handles the actions associated with tapping on a tile (switching it with the empty tile,
      * and updating the various status boxes).
@@ -173,13 +202,14 @@ public class PuzzleActivity extends AppCompatActivity {
     private final OnClickListener tileOnClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            // If the puzzle's been solved already, don't allow the user to move the tiles around
+            // If the puzzle's been solved already, don't allow the user to move the tiles around anymore
             if (timer == null) {
                 Toast.makeText(PuzzleActivity.this, R.string.errorNewPuzzle, Toast.LENGTH_SHORT).show();
 
                 return;
             }
 
+            // Find which tile has been tapped
             int tileRow = -1;
             int tileColumn = -1;
             for (int row = 0; row < MAX_ROWS; row++) {
@@ -238,8 +268,6 @@ public class PuzzleActivity extends AppCompatActivity {
 
         private TimerTask(@NonNull PuzzleActivity puzzleActivity) {
             puzzleActivityWeakReference = new WeakReference<>(puzzleActivity);
-
-            Log.w(NAME, "instantiating TimerTask(" + puzzleActivity + ")");
         }
 
         @Override
@@ -305,8 +333,6 @@ public class PuzzleActivity extends AppCompatActivity {
             else {
                 int elapsedTime = savedInstanceState.getInt(NAME_ELAPSED_TIME);
 
-                Log.w(NAME, "elapsedTime = " + elapsedTime);
-
                 if (elapsedTime > 0) {
                     timer = new TimerTask(this);
                     timer.elapsedTime = elapsedTime;
@@ -364,11 +390,10 @@ public class PuzzleActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        Log.w(NAME, "entering onOptionsItemSelected(" + item + ")");
-
         return actionBarOverflow.optionsItemSelected(item);
     }
 
+    // Converts the JSON strings to the ArrayLists that they represent
     private void retrieveGameHistory(final String easyJson, final String mediumJson, final String hardJson) {
         Gson historyGson = new Gson();
         Type historyType = new TypeToken<List<SolveHistory>>() {}.getType();
@@ -400,7 +425,7 @@ public class PuzzleActivity extends AppCompatActivity {
         // Maximum number of times to randomly move the empty tile around; the more times it's moved,
         // the harder the puzzle will be to solve.  These numbers should be odd to avoid the small
         // chance that the randomized puzzle will actually be in the solved state.
-        final int MAXIMUM_MOVES1 = 5;       // maximum number of times for an easy puzzle
+        final int MAXIMUM_MOVES1 = 5;       // maximum number of times for an easy puzzle (this is very easy for testing/demoing)
         final int MAXIMUM_MOVES2 = 25;      // maximum number of times for a medium puzzle
         final int MAXIMUM_MOVES3 = 45;      // maximum number of times for a hard puzzle
 
@@ -412,12 +437,13 @@ public class PuzzleActivity extends AppCompatActivity {
 
         difficulty = getSharedPreferences(NAME, MODE_PRIVATE).getInt(NAME_DIFFICULTY, DIFFICULTY1);
         int maximumMoves;      // the number of times to move the empty tile before we consider the puzzle to be randomized
-        if (difficulty == DIFFICULTY1)
-            maximumMoves = MAXIMUM_MOVES1;
-        else if (difficulty == DIFFICULTY2)
-            maximumMoves = MAXIMUM_MOVES2;
-        else
-            maximumMoves = MAXIMUM_MOVES3;
+        if (difficulty == DIFFICULTY1) {
+			maximumMoves = MAXIMUM_MOVES1;
+		} else if (difficulty == DIFFICULTY2) {
+			maximumMoves = MAXIMUM_MOVES2;
+		} else {
+			maximumMoves = MAXIMUM_MOVES3;
+		}
 
         do {
             // Pick a random direction to move the empty tile;
@@ -454,6 +480,8 @@ public class PuzzleActivity extends AppCompatActivity {
                         counter++;
                     }
             }   // end switch
+		// Continue looping until the desired number of moves has been reached; if the puzzle is somehow solved at the end
+		// of this, move the tile again so that it's not solved
         } while (counter < maximumMoves || isSolved());
 
         setTileBackground();
@@ -506,28 +534,18 @@ public class PuzzleActivity extends AppCompatActivity {
         initializeTiles();
 	}
 
+	// Set the tile's images and OnClickListeners
     private void initializeTiles() {
-        // Associate the puzzle pieces with their images
-        puzzlePieces[0] = getDrawable(R.drawable.android00);
-        puzzlePieces[1] = getDrawable(R.drawable.android01);
-        puzzlePieces[2] = getDrawable(R.drawable.android02);
-        puzzlePieces[3] = getDrawable(R.drawable.android10);
-        puzzlePieces[4] = getDrawable(R.drawable.android11);
-        puzzlePieces[5] = getDrawable(R.drawable.android12);
-        puzzlePieces[6] = getDrawable(R.drawable.android20);
-        puzzlePieces[7] = getDrawable(R.drawable.android21);
-        puzzlePieces[8] = getDrawable(R.drawable.blank);
-
         // Assign the images with the tiles, given their ids.
-        tiles[0][0].imageView.setImageDrawable(puzzlePieces[tiles[0][0].id]);
-        tiles[0][1].imageView.setImageDrawable(puzzlePieces[tiles[0][1].id]);
-        tiles[0][2].imageView.setImageDrawable(puzzlePieces[tiles[0][2].id]);
-        tiles[1][0].imageView.setImageDrawable(puzzlePieces[tiles[1][0].id]);
-        tiles[1][1].imageView.setImageDrawable(puzzlePieces[tiles[1][1].id]);
-        tiles[1][2].imageView.setImageDrawable(puzzlePieces[tiles[1][2].id]);
-        tiles[2][0].imageView.setImageDrawable(puzzlePieces[tiles[2][0].id]);
-        tiles[2][1].imageView.setImageDrawable(puzzlePieces[tiles[2][1].id]);
-        tiles[2][2].imageView.setImageDrawable(puzzlePieces[tiles[2][2].id]);
+        tiles[0][0].imageView.setImageDrawable(getDrawable(R.drawable.android00));
+        tiles[0][1].imageView.setImageDrawable(getDrawable(R.drawable.android01));
+        tiles[0][2].imageView.setImageDrawable(getDrawable(R.drawable.android02));
+        tiles[1][0].imageView.setImageDrawable(getDrawable(R.drawable.android10));
+        tiles[1][1].imageView.setImageDrawable(getDrawable(R.drawable.android11));
+        tiles[1][2].imageView.setImageDrawable(getDrawable(R.drawable.android12));
+        tiles[2][0].imageView.setImageDrawable(getDrawable(R.drawable.android20));
+        tiles[2][1].imageView.setImageDrawable(getDrawable(R.drawable.android21));
+        tiles[2][2].imageView.setImageDrawable(getDrawable(R.drawable.blank));
 
         // Set the tiles' OnClickListeners
         for (int row = 0; row < MAX_ROWS; row++)
@@ -538,9 +556,8 @@ public class PuzzleActivity extends AppCompatActivity {
         setTileBackground();
     }
 
-    /*
-     * Sets the borders for all the non-empty tiles; the empty tile has no border
-     */
+
+    // Sets the borders for all the non-empty tiles; the empty tile has no border
     private void setTileBackground() {
         for (int row = 0; row < MAX_ROWS; row++)
             for (int column = 0; column < MAX_COLS; column++)
@@ -610,14 +627,19 @@ public class PuzzleActivity extends AppCompatActivity {
 			timer.cancel(true);
 			timer = null;
 
-            Log.w(NAME, "timer set to null");
-
             timeView.setText(getString(R.string.time) + ": " + intToHHMMSS(solveTime));
 
             // Save the game play history
             onHistoryChanged(difficulty, new SolveHistory(new Date(), solveTime, moves, difficulty));
 
-            startActivity(new Intent(PuzzleActivity.this, SolvedActivity.class));
+			ImageView empty =  tiles[2][2].imageView;
+			empty.setAlpha(0.0f);
+			empty.setImageDrawable(getDrawable(R.drawable.android22));
+			setTileBackground();
+			empty.animate()
+				.alpha(1.0f)
+				.setDuration(FADE_IN_TIME)
+				.withEndAction(new SolvedRunnable());
         }
 	}
 
@@ -650,7 +672,6 @@ public class PuzzleActivity extends AppCompatActivity {
 		if (timer != null) {
 			timer.cancel(true);
 			timer = null;
-			Log.w(NAME, "set timer to null");
 		}
 	}
 }
