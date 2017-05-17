@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Sliding Tile Puzzle</string>
     <string name="attributionText">The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License.</string>
-    <string name="emptyTile">" "</string>
+    <string name="emptyTile">Empty tile</string>
     <string name="android00Text">Top left tile</string>
     <string name="android01Text">Top middle tile</string>
     <string name="android02Text">Top right tile</string>
