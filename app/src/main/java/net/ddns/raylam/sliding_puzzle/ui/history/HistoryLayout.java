@@ -18,7 +18,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.LinearLayout;
 
-import android.widget.TextView;
 import net.ddns.raylam.sliding_puzzle.HistoryActivity;
 import net.ddns.raylam.sliding_puzzle.R;
 import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
@@ -44,7 +43,7 @@ public class HistoryLayout extends LinearLayout {
     public HistoryLayout(final Context context, final AttributeSet attributeSet, final int defStyleAttr) {
         super(context, attributeSet, defStyleAttr);
 
-        historyAdapter = new HistoryAdapter(context, this);
+        historyAdapter = new HistoryAdapter(context);
     }
 
     @Override

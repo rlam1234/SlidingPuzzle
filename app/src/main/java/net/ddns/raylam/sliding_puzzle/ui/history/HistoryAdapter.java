@@ -10,11 +10,10 @@
 package net.ddns.raylam.sliding_puzzle.ui.history;
 
 import android.content.Context;
-import android.net.LocalSocketAddress;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import net.ddns.raylam.sliding_puzzle.R;
@@ -23,15 +22,15 @@ import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.support.v7.widget.RecyclerView.NO_ID;
+
 class HistoryAdapter extends RecyclerView.Adapter<CellViewHolder> {
     private static final String NAME = HistoryAdapter.class.getSimpleName();
 
     List<SolveHistory> history = new ArrayList<>();
     private final LayoutInflater layoutInflater;
-	private final Context context;
 
-    HistoryAdapter(Context context, ViewGroup layout) {
-		this.context = context;
+    HistoryAdapter(@NonNull final Context context) {
         layoutInflater = LayoutInflater.from(context);
         setHasStableIds(true);
     }
@@ -39,19 +38,17 @@ class HistoryAdapter extends RecyclerView.Adapter<CellViewHolder> {
     // Returns the stable ID for the item at the given position
     @Override
     public long getItemId(int position) {
-        return history.get(position).date.getTime();
+        return position < 0 || position >= history.size() ? NO_ID : history.get(position).date.getTime();
     }
 
     @Override
-    public CellViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-		View historyCell = layoutInflater.inflate(R.layout.historycell, parent, false);
-
-        return new CellViewHolder(historyCell);
+    public CellViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
+        return new CellViewHolder(layoutInflater.inflate(R.layout.historycell, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(CellViewHolder holder, int position) {
-        holder.update(history.get(position), position);
+    public void onBindViewHolder(@NonNull final CellViewHolder holder, int position) {
+        holder.update(history.get(position));
     }
 
     @Override
