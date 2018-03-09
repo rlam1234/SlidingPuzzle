@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Space
+        android:id="@+id/centre"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"
+        android:layout_margin="@dimen/tileMargin"
+        android:layout_width="0dp"
+        android:layout_height="0dp"/>
+
+    <LinearLayout
+        android:id="@+id/column2"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@id/centre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@id/tile02"
+            android:src="@drawable/android02"
+            android:adjustViewBounds="true"
+            android:background="@drawable/customborder"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/tileMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@id/tile12"
+            android:src="@drawable/android12"
+            android:adjustViewBounds="true"
+            android:background="@drawable/customborder"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/tileMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@id/tile22"
+            android:src="@drawable/android22"
+            android:adjustViewBounds="true"
+            android:background="@drawable/customborder"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/tileMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/column1"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@id/column2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@id/tile01"
+            android:src="@drawable/android01"
+            android:adjustViewBounds="true"
+            android:background="@drawable/customborder"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/tileMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@id/tile11"
+            android:src="@drawable/android11"
+            android:adjustViewBounds="true"
+            android:background="@drawable/customborder"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/tileMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@id/tile21"
+            android:src="@drawable/android21"
+            android:adjustViewBounds="true"
+            android:background="@drawable/customborder"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/tileMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/column0"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@id/column1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@id/tile00"
+            android:src="@drawable/android00"
+            android:adjustViewBounds="true"
+            android:background="@drawable/customborder"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/tileMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@id/tile10"
+            android:src="@drawable/android10"
+            android:adjustViewBounds="true"
+            android:background="@drawable/customborder"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/tileMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@id/tile20"
+            android:src="@drawable/android20"
+            android:adjustViewBounds="true"
+            android:background="@drawable/customborder"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/tileMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/statusColumn"
+        android:layout_toRightOf="@id/centre"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/elapsedTime"
+            android:text="Time: 00:00:00"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/titleMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/newPuzzle"
+            android:text="New Puzzle"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/titleMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/moves"
+            android:text="Moves: 000"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/titleMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</RelativeLayout>

@@ -107,7 +107,7 @@
 		android:layout_marginLeft="@dimen/tileMargin"
 		android:layout_marginRight="@dimen/tileMargin"
 		app:layout_constraintStart_toEndOf="@+id/tile11"
-		app:layout_constraintEnd_toEndOf="@id/llayout"
+		app:layout_constraintEnd_toEndOf="@id/statusRow"
 		app:layout_constraintTop_toBottomOf="@id/tile02"
 		app:layout_constraintBottom_toTopOf="@+id/tile22"/>
 	<ImageView
@@ -126,7 +126,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintEnd_toStartOf="@id/tile21"
 		app:layout_constraintTop_toBottomOf="@id/tile10"
-		app:layout_constraintBottom_toTopOf="@id/llayout"/>
+		app:layout_constraintBottom_toTopOf="@id/statusRow"/>
 	<ImageView
 		android:id="@+id/tile21"
 		android:layout_height="0dp"
@@ -141,7 +141,7 @@
 		android:layout_marginLeft="@dimen/tileMargin"
 		android:layout_marginRight="@dimen/tileMargin"
 		app:layout_constraintTop_toBottomOf="@id/tile11"
-		app:layout_constraintBottom_toTopOf="@id/llayout"
+		app:layout_constraintBottom_toTopOf="@id/statusRow"
 		app:layout_constraintStart_toEndOf="@+id/tile20"
 		app:layout_constraintEnd_toStartOf="@id/tile22"/>
 	<ImageView
@@ -155,12 +155,12 @@
 		android:layout_marginLeft="@dimen/tileMargin"
 		android:layout_marginRight="@dimen/tileMargin"
 		app:layout_constraintTop_toBottomOf="@+id/tile12"
-		app:layout_constraintBottom_toTopOf="@id/llayout"
+		app:layout_constraintBottom_toTopOf="@id/statusRow"
 		app:layout_constraintStart_toEndOf="@+id/tile21"
 		app:layout_constraintEnd_toEndOf="parent" />
 
 	<LinearLayout
-		android:id="@+id/llayout"
+		android:id="@+id/statusRow"
 		android:orientation="horizontal"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -180,7 +180,7 @@
 			android:layout_weight="1"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:text="Elapsed Time: hh:mm:ss"/>
+			android:text="Time: hh:mm:ss"/>
 		<Button
 			android:id="@+id/newPuzzle"
 			android:text="@string/newPuzzleText"
