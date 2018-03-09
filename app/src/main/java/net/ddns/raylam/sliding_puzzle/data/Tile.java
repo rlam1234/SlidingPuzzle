@@ -24,6 +24,9 @@ public class Tile {
     @NonNull
     public ImageView imageView;
 
+	public float startX = -1;
+	public float startY = -1;
+
     public Tile(int id, @NonNull final ImageView imageView) {
         this.id = id;
         this.imageView = imageView;
