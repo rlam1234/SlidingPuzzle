@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import net.ddns.raylam.sliding_puzzle.data.Coordinate;
 import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 import net.ddns.raylam.sliding_puzzle.data.Tile;
 import net.ddns.raylam.sliding_puzzle.ui.overflow.ActionBarOverflow;
@@ -50,6 +51,8 @@ public class PuzzleActivity extends AppCompatActivity {
     private static final String NAME_ELAPSED_TIME = "elapsedTime";
     private static final String NAME_SOLVE_TIME = "solveTime";
     private static final String NAME_ID = "id";
+    private static final String NAME_ROW = "row";
+    private static final String NAME_COLUMN = "column";
 	private static final String NAME_SOLVED_STATE = "solvedState";
 
     public static final String NAME_SOUND_ENABLED = "soundEnabled";
@@ -98,6 +101,12 @@ public class PuzzleActivity extends AppCompatActivity {
 	 */
 	int[][] solvedState = new int[MAX_ROWS][MAX_COLS];
 
+	/*
+	 * The x-y co-ordinates for each tile's ImageView. E.g. viewCoordinates[0][0] will have the x-y co-ordinates for the tile
+	 * in row 0, column 0.
+	 */
+	private Coordinate[][] viewCoordinates = new Coordinate[MAX_ROWS][MAX_COLS];
+
     private ActionBarOverflow actionBarOverflow;
 
     // Game difficulty levels
@@ -126,7 +135,12 @@ public class PuzzleActivity extends AppCompatActivity {
 			// update tiles[][] to reflect the up to date state of the puzzle
 			Tile emptyTile = tiles[emptyTileRow][emptyTileColumn];
 			tiles[emptyTileRow][emptyTileColumn] = tiles[tileRow][tileColumn];
+            tiles[emptyTileRow][emptyTileColumn].row = emptyTileRow;
+            tiles[emptyTileRow][emptyTileColumn].column = emptyTileColumn;
+
 			tiles[tileRow][tileColumn] = emptyTile;
+            tiles[tileRow][tileColumn].row = tileRow;
+            tiles[tileRow][tileColumn].column = tileColumn;
 
 			emptyTileRow = tileRow;
 			emptyTileColumn = tileColumn;
@@ -172,7 +186,7 @@ public class PuzzleActivity extends AppCompatActivity {
 			Log.d(NAME, "Clicked on tileRow = " + tileRow + ", tileColumn = " + tileColumn);
 
 			Runnable finishAnimation = new FinishAnimationRunnable(tileRow, tileColumn);
-			ImageView tileView = tiles[tileRow][tileColumn].imageView;
+			ImageView tileView = (ImageView)v; // =tiles[tileRow][tileColumn].imageView;
 
 			// Can we slide the tapped tile into the empty space?
             if (tileRow == emptyTileRow - 1 && tileColumn == emptyTileColumn) {
@@ -305,8 +319,10 @@ public class PuzzleActivity extends AppCompatActivity {
 				for (int column = 0; column < MAX_COLS; column++) {
 					int index = row * MAX_COLS + column;
 					int tileID = savedInstanceState.getInt(NAME_ID + index);
-					tiles[row][column] = new Tile(tileID, (ImageView) findViewById(tileID));
-
+					tiles[row][column] = new Tile(  tileID,
+                                                    (ImageView) findViewById(tileID),
+                                                    savedInstanceState.getInt(NAME_ROW + index),
+                                                    savedInstanceState.getInt(NAME_COLUMN + index));
 					solvedState[row][column] = savedInstanceState.getInt(NAME_SOLVED_STATE + index);
 				}
 			}
@@ -333,6 +349,8 @@ public class PuzzleActivity extends AppCompatActivity {
 			for (int column = 0; column < MAX_COLS; column++) {
 				int index = row * MAX_COLS + column;
 				outState.putInt(NAME_ID + index, tiles[row][column].id);
+                outState.putInt(NAME_ROW + index, tiles[row][column].row);
+                outState.putInt(NAME_COLUMN + index, tiles[row][column].column);
 				outState.putInt(NAME_SOLVED_STATE + index, solvedState[row][column]);
 			}
 		}
@@ -348,6 +366,13 @@ public class PuzzleActivity extends AppCompatActivity {
 		super.onDestroy();
 
 		stopTimer();
+
+        for (int row = 0; row < MAX_ROWS; row++) {
+            for (int column = 0; column < MAX_COLS; column++) {
+                tiles[row][column].imageView.setOnClickListener(null);
+            }
+        }
+
 	}	// end onDestroy
 
     @Override
@@ -498,15 +523,15 @@ public class PuzzleActivity extends AppCompatActivity {
         emptyTileColumn = 2;
 
         // Assign the tiles to the puzzle board; initially, this will be in the solved position.
-        tiles[0][0] = new Tile(R.id.tile00, (ImageView) findViewById(R.id.tile00));
-        tiles[0][1] = new Tile(R.id.tile01, (ImageView) findViewById(R.id.tile01));
-        tiles[0][2] = new Tile(R.id.tile02, (ImageView) findViewById(R.id.tile02));
-        tiles[1][0] = new Tile(R.id.tile10, (ImageView) findViewById(R.id.tile10));
-        tiles[1][1] = new Tile(R.id.tile11, (ImageView) findViewById(R.id.tile11));
-        tiles[1][2] = new Tile(R.id.tile12, (ImageView) findViewById(R.id.tile12));
-        tiles[2][0] = new Tile(R.id.tile20, (ImageView) findViewById(R.id.tile20));
-        tiles[2][1] = new Tile(R.id.tile21, (ImageView) findViewById(R.id.tile21));
-        tiles[2][2] = new Tile(R.id.tile22, (ImageView) findViewById(R.id.tile22));
+        tiles[0][0] = new Tile(R.id.tile00, (ImageView) findViewById(R.id.tile00), 0, 0);
+        tiles[0][1] = new Tile(R.id.tile01, (ImageView) findViewById(R.id.tile01), 0, 1);
+        tiles[0][2] = new Tile(R.id.tile02, (ImageView) findViewById(R.id.tile02), 0, 2);
+        tiles[1][0] = new Tile(R.id.tile10, (ImageView) findViewById(R.id.tile10), 1, 0);
+        tiles[1][1] = new Tile(R.id.tile11, (ImageView) findViewById(R.id.tile11), 1,1);
+        tiles[1][2] = new Tile(R.id.tile12, (ImageView) findViewById(R.id.tile12), 1, 2);
+        tiles[2][0] = new Tile(R.id.tile20, (ImageView) findViewById(R.id.tile20),2, 0);
+        tiles[2][1] = new Tile(R.id.tile21, (ImageView) findViewById(R.id.tile21), 2, 1);
+        tiles[2][2] = new Tile(R.id.tile22, (ImageView) findViewById(R.id.tile22), 2, 2);
 
 		// Remember the solved state
 		for (int row = 0; row < MAX_ROWS; row++) {
@@ -519,11 +544,18 @@ public class PuzzleActivity extends AppCompatActivity {
 		Log.d(NAME, "in initialize, solvedState =\n" + solvedStateToString());
 
         initializeTiles();
-	}
+	}   // end initialize
 
 	// Set the tile's images and OnClickListeners
     private void initializeTiles() {
-        // Set the tiles' OnClickListeners
+        // Populate viewCoordinates
+        for (int row = 0; row < MAX_ROWS; row++) {
+            for (int column = 0; column < MAX_COLS; column++) {
+                viewCoordinates[row][column] = new Coordinate(tiles[row][column].imageView.getX(), tiles[row][column].imageView.getY());
+            }
+        }
+
+        // Set the tiles' OnClickListeners and correct ImageView positions
         for (int row = 0; row < MAX_ROWS; row++) {
 			for (int column = 0; column < MAX_COLS; column++) {
 				if (row == emptyTileRow && column == emptyTileColumn) {
@@ -531,6 +563,11 @@ public class PuzzleActivity extends AppCompatActivity {
 				} else {
 					tiles[row][column].imageView.setOnClickListener(tileOnClickListener);
 				}
+
+				int tileRow = tiles[row][column].row;
+				int tileColumn = tiles[row][column].column;
+				tiles[row][column].imageView.setX(viewCoordinates[tileRow][tileColumn].x);
+                tiles[row][column].imageView.setY(viewCoordinates[tileRow][tileColumn].y);
 			}
 		}
 
@@ -571,6 +608,8 @@ public class PuzzleActivity extends AppCompatActivity {
 	// its animation sequence
     private void swapTiles(int row, int column) {
 		Tile tile = tiles[row][column];
+		tile.row = emptyTileRow;
+		tile.column = emptyTileColumn;
 		tile.imageView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
 		if (row == emptyTileRow - 1) {					// swap the empty tile with the tile above it
@@ -581,6 +620,8 @@ public class PuzzleActivity extends AppCompatActivity {
 				.start();
 
 			tiles[row][column] = tiles[emptyTileRow][emptyTileColumn];
+            tiles[row][column].row = row;
+            tiles[row][column].column = column;
 			tiles[emptyTileRow--][emptyTileColumn] = tile;
 		} else if (row == emptyTileRow + 1) {			// swap the empty tile with the tile below it
 			tile.imageView.animate()

@@ -16,10 +16,13 @@ import android.widget.ImageView;
  * This represents one of the tiles in the puzzle.
  * The ImageView contains the picture on the tile.
  * The id contains an identifier to make it easier to programmatically determine which tile is which.
+ * The row/column values indicate where in the puzzle this tile is currently located.
  */
 public class Tile {
 	private static final String NAME = Tile.class.getSimpleName();
 
+    public int row = -1;
+    public int column = -1;
 	public int id;
     @NonNull
     public ImageView imageView;
@@ -32,9 +35,15 @@ public class Tile {
         this.imageView = imageView;
     }
 
+    public Tile(int id, @NonNull final ImageView imageView, int row, int column) {
+        this(id, imageView);
+        this.row = row;
+        this.column = column;
+    }
+
     @Override
     public String toString() {
-        return "id = " + id + ", imageView = " + imageView;
+        return "[" + row + ", " + column + "], id = " + id + ", imageView = " + imageView;
     }
 
     @Override
