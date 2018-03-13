@@ -13,14 +13,10 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-
-import net.ddns.raylam.sliding_puzzle.data.SolveHistory;
 
 public class SolvedActivity extends AppCompatActivity {
     public static final String NAME = SolvedActivity.class.getSimpleName();
@@ -39,7 +35,7 @@ public class SolvedActivity extends AppCompatActivity {
         allowSound = getSharedPreferences(PuzzleActivity.NAME, MODE_PRIVATE).getBoolean(NAME_SOUND_ENABLED, true);
 
         if (allowSound) {
-            // If the user presses the hard volumne up/down buttons, affect the Multimedia stream, not the ringer.
+            // If the user presses the hard volume up/down buttons, affect the Multimedia stream, not the ringer.
             setVolumeControlStream(AudioManager.STREAM_MUSIC);
             mediaPlayer = MediaPlayer.create(this, R.raw.yay);
 
@@ -48,7 +44,7 @@ public class SolvedActivity extends AppCompatActivity {
                 public void onCompletion(final MediaPlayer mp) {
                     doneWithMediaPlayer();
 
-                    startActivity(new Intent(SolvedActivity.this, HistoryActivity.class));
+					startActivity(new Intent(SolvedActivity.this, HistoryActivity.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 }
@@ -62,10 +58,9 @@ public class SolvedActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    startActivity(new Intent(SolvedActivity.this, HistoryActivity.class));
+					startActivity(new Intent(SolvedActivity.this, HistoryActivity.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
-
                 }
             }, 1500);
         }
